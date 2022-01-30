@@ -1,0 +1,19 @@
+{
+  "name": "PangaeaTech Reusable Workflows",
+  "author": "Pangaea Information Technologies, Ltd.",
+  "license": "MIT",
+  "private": "true",
+  "repository": "github:pangaeatech/.github",
+  "version": "0.1.0",
+  "dependencies": {},
+  "devDependencies": {
+    "husky": "^7.0.4",
+    "lint-staged": "^12.3.2",
+    "prettier": "^2.5.1"
+  },
+  "scripts": {
+    "format:check": "prettier --check .",
+    "format:fix": "prettier --write .",
+    "prepare": "husky install .husky"
+  }
+}

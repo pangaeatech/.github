@@ -1,0 +1,18 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: "/"
+    schedule:
+      interval: daily
+      time: "11:00"
+    commit-message:
+      prefix: "[Production]"
+      prefix-development: "[Development]"
+    rebase-strategy: "disabled"
+  - package-ecosystem: "github-actions"
+    directory: "/workflow-templates"
+    schedule:
+      interval: "daily"
+      time: "11:00"
+    commit-message:
+      prefix: "[Development]"
