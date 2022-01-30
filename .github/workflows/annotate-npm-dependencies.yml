@@ -1,0 +1,45 @@
+# Updates a dependabot-created pull request to identify the direct
+# dependency(ies) that are impacted.
+#
+# Example Usage:
+# --------------
+#   name: My favorite workflow
+#   on:
+#     pull_request:
+#       types: [opened, synchronize, reopened]
+#   jobs:
+#     annotate-npm-dependencies:
+#       if: ${{ github.actor == 'dependabot[bot]' }}
+#       permissions:
+#         pull-requests: write
+#       uses: pangaeatech/.github/workflows/annotate-npm-dependencies.yml@main
+#       with:
+#         pr_url: ${{github.event.pull_request.html_url}}
+
+name: Annotate npm dependencies
+on:
+  workflow_call:
+    inputs:
+      pr_url:
+        required: true
+        type: string
+jobs:
+  annotate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Retrieve dependabot metadata
+        id: metadata
+        uses: dependabot/fetch-metadata@v1.1.1
+        with:
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
+      - name: Generate comment
+        run: |
+          echo "### Direct Dependencies Affected" > body.txt
+          echo "```" >> body.txt
+          npm ls ${PR_DEPS//,/ } >> body.txt
+          echo "```" >> body.txt
+          gh pr comment "$PR_URL" -F body.txt
+        env:
+          PR_URL: ${{ inputs.pr_url }}
+          PR_DEPS: ${{ steps.metadata.outputs.dependency-names }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

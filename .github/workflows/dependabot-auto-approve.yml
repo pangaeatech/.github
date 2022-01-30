@@ -1,0 +1,40 @@
+# Automatically approves any pull requests created by dependabot for
+# development dependencies.
+#
+# Example Usage:
+# --------------
+#   name: My favorite workflow
+#   on:
+#     pull_request:
+#       types: [opened, synchronize, reopened]
+#   jobs:
+#     auto-approve:
+#       if: ${{ github.actor == 'dependabot[bot]' }}
+#       permissions:
+#         pull-requests: write
+#       uses: pangaeatech/.github/workflows/dependabot-auto-approve.yml@main
+#       with:
+#         pr_url: ${{github.event.pull_request.html_url}}
+
+name: Auto-approve development dependencies
+on:
+  workflow_call:
+    inputs:
+      pr_url:
+        required: true
+        type: string
+jobs:
+  approve:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Retreive dependabot metadata
+        id: metadata
+        uses: dependabot/fetch-metadata@v1.1.1
+        with:
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
+      - name: Approve the PR
+        if: ${{ steps.metadata.outputs.dependency-type == 'direct:development' }}
+        run: gh pr review --approve "$PR_URL"
+        env:
+          PR_URL: ${{ inputs.pr_url }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
