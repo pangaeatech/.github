@@ -37,6 +37,8 @@ jobs:
         uses: actions/checkout@v2
       - name: Setup Node
         uses: actions/setup-node@master
+        with:
+          node-version: "14"
       - name: Generate comment
         run: |
           echo "### Dependency Trees for \"${PR_DEPS//,/, }\"" > body.txt
