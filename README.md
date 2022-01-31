@@ -2,7 +2,7 @@
 
 A collection of publicly available [reusable workflows](https://docs.github.com/en/actions/using-workflows/reusing-workflows).
 
-### [Annotate NPM Dependencies](.github/workflows/annotate-npm-dependencies.yml)
+### 1. [Annotate NPM Dependencies](.github/workflows/annotate-npm-dependencies.yml)
 
 Updates a pull request created by dependabot for an NPM-based dependency to
 identify the direct dependencies that are impacted.
