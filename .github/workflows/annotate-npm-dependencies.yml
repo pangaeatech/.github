@@ -16,6 +16,9 @@
 #     uses: pangaeatech/.github/.github/workflows/annotate-npm-dependencies.yml@main
 #     with:
 #       pr_url: ${{github.event.pull_request.html_url}}
+#
+# NOTE: This workflow is currently incompatible with the
+# "pull-request-branch-name.separator" dependabot configuration setting.
 
 name: Annotate NPM Dependencies
 on:
