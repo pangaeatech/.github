@@ -39,7 +39,7 @@ jobs:
         uses: actions/setup-node@master
       - name: Generate comment
         run: |
-          echo "### Direct Dependencies Affected" > body.txt
+          echo "### Dependency Trees for \"${PR_DEPS//,/, }\"" > body.txt
           echo "\`\`\`" >> body.txt
           find . -name node_modules -prune -o -name package.json -exec bash -c "cd \`dirname \"{}\"\` && npm ls ${PR_DEPS//,/ }" \; >> body.txt
           echo "\`\`\`" >> body.txt
