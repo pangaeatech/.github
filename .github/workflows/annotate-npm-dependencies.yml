@@ -1,23 +1,23 @@
-# Updates a dependabot-created pull request to identify the direct
-# dependency(ies) that are impacted.
+# Updates a pull request created by dependabot for an NPM-based dependency to
+# identify the direct dependencies that are impacted.
 #
 # Example Usage:
 # --------------
-#   name: My favorite workflow
-#   on:
-#     pull_request:
-#       types: [opened, synchronize, reopened]
-#   jobs:
-#     annotate-npm-dependencies:
-#       if: ${{ github.actor == 'dependabot[bot]' }}
-#       permissions:
-#         contents: read
-#         pull-requests: write
-#       uses: pangaeatech/.github/.github/workflows/annotate-npm-dependencies.yml@main
-#       with:
-#         pr_url: ${{github.event.pull_request.html_url}}
+# name: My favorite workflow
+# on:
+#   pull_request:
+#     types: [opened, synchronize, reopened]
+# jobs:
+#   annotate-npm-dependencies:
+#     if: ${{ github.actor == 'dependabot[bot]' }}
+#     permissions:
+#       contents: read
+#       pull-requests: write
+#     uses: pangaeatech/.github/.github/workflows/annotate-npm-dependencies.yml@main
+#     with:
+#       pr_url: ${{github.event.pull_request.html_url}}
 
-name: Annotate npm dependencies
+name: Annotate NPM Dependencies
 on:
   workflow_call:
     inputs:
