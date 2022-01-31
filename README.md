@@ -27,4 +27,4 @@ jobs:
 
 #### Example Output:
 
-!(images/annotate-npm-dependencies.png)
+![Example Output](images/annotate-npm-dependencies.png)
