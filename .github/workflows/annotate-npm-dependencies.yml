@@ -37,10 +37,9 @@ jobs:
         uses: actions/checkout@v2
       - name: Setup Node
         uses: actions/setup-node@master
-        with:
-          node-version: "14"
       - name: Generate comment
         run: |
+          find . -name node_modules -prune -o -name package.json -exec bash -c "cd \`dirname \"{}\"\` && npm install" \;
           echo "### Dependency Trees for \"${PR_DEPS//,/, }\"" > body.txt
           echo "\`\`\`" >> body.txt
           find . -name node_modules -prune -o -name package.json -exec bash -c "cd \`dirname \"{}\"\` && npm ls ${PR_DEPS//,/ }" \; >> body.txt
