@@ -32,11 +32,15 @@ jobs:
         uses: dependabot/fetch-metadata@v1.1.1
         with:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
+      - name: Checkout source code
+        uses: actions/checkout@v2
+      - name: Setup Node
+        uses: actions/setup-node@master
       - name: Generate comment
         run: |
           echo "### Direct Dependencies Affected" > body.txt
           echo "```" >> body.txt
-          npm ls ${PR_DEPS//,/ } >> body.txt
+          find . -name node_modules -prune -o -name package.json -exec bash -c "cd \`dirname \"{}\"\` && npm ls ${PR_DEPS//,/ }" \; >> body.txt
           echo "```" >> body.txt
           gh pr comment "$PR_URL" -F body.txt
         env:
