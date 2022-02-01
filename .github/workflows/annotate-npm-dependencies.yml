@@ -16,6 +16,7 @@
 #     uses: pangaeatech/.github/.github/workflows/annotate-npm-dependencies.yml@main
 #     with:
 #       pr_url: ${{github.event.pull_request.html_url}}
+#       branch: ${{github.head_ref}}
 #
 # NOTE: This workflow is currently incompatible with the
 # "pull-request-branch-name.separator" dependabot configuration setting.
@@ -25,6 +26,9 @@ on:
   workflow_call:
     inputs:
       pr_url:
+        required: true
+        type: string
+      branch:
         required: true
         type: string
 jobs:
@@ -42,8 +46,7 @@ jobs:
         uses: actions/setup-node@master
       - name: Generate comment
         run: |
-          branch=$(git branch --show-current);
-          readarray -d "/" -t parts<<<"${branch}";
+          readarray -d "/" -t parts<<<"${BRANCH}";
           if [ "${parts[0]}" = "dependabot" -a "${parts[1]}" = "npm_and_yarn" ]; then
           dir="/";
           if [ ! -z ${parts[3]} ]; then dir="${parts[2]}"; cd $dir; fi;
@@ -54,9 +57,10 @@ jobs:
           echo "\`\`\`" >> body.txt;
           gh pr comment "$PR_URL" -F body.txt;
           else
-          echo "Skipping ${branch}"
+          echo "Skipping ${BRANCH}"
           fi;
         env:
           PR_URL: ${{ inputs.pr_url }}
+          BRANCH: ${{ inputs.branch }}
           PR_DEPS: ${{ steps.metadata.outputs.dependency-names }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
