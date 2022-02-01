@@ -43,7 +43,7 @@ jobs:
       - name: Generate comment
         run: |
           branch=$(git branch --show-current);
-          readarray -d "/" -t parts<<<"$branch";
+          readarray -d "/" -t parts<<<"${branch}";
           if [ "${parts[0]}" = "dependabot" -a "${parts[1]}" = "npm_and_yarn" ]; then
           dir="/";
           if [ ! -z ${parts[3]} ]; then dir="${parts[2]}"; cd $dir; fi;
@@ -53,6 +53,8 @@ jobs:
           npm ls ${PR_DEPS//,/ } >> body.txt;
           echo "\`\`\`" >> body.txt;
           gh pr comment "$PR_URL" -F body.txt;
+          else
+          echo "Skipping ${branch}"
           fi;
         env:
           PR_URL: ${{ inputs.pr_url }}
