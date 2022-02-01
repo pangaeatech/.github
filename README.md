@@ -23,6 +23,7 @@ jobs:
     uses: pangaeatech/.github/.github/workflows/annotate-npm-dependencies.yml@main
     with:
       pr_url: ${{github.event.pull_request.html_url}}
+      branch: ${{github.head_ref}}
 ```
 
 #### Example Output:
