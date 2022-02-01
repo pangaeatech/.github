@@ -20,7 +20,7 @@ jobs:
     permissions:
       contents: read
       pull-requests: write
-    uses: pangaeatech/.github/.github/workflows/annotate-npm-dependencies.yml@main
+    uses: pangaeatech/.github/.github/workflows/annotate-npm-dependencies.yml@v1
     with:
       pr_url: ${{github.event.pull_request.html_url}}
       branch: ${{github.head_ref}}
