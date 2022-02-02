@@ -32,9 +32,8 @@ jobs:
 
 ### 2. [Add To Redmine](.github/workflows/add-to-redmine.yml)
 
-Adds a new issue to your company's [Redmine](https://redmine.org/) deployment
-using the REST API for the current pull request. Adds a comment to the pull
-request with a link to the new issue.
+Adds a new issue to your [Redmine](https://redmine.org/) deployment
+for the current pull request. Adds a link to the new issue to the pull request.
 
 #### Example Usage:
 
