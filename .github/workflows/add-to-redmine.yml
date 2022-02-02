@@ -61,7 +61,7 @@ jobs:
           sudo apt-get install -y jq curl pandoc
           BODY=$(echo "Pull Request: [$PR_URL]($PR_URL)
 
-             $PR_BODY" | pandoc -f gfm -t textile);
+             $PR_BODY" | pandoc -f gfm -t html | pandoc -f html -t textile);
           jq --null-input \
              --arg key "$RM_KEY" \
              --arg subj "$PR_SUBJECT" \
