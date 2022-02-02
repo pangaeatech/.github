@@ -58,7 +58,7 @@ jobs:
     steps:
       - name: setup environment
         run: |
-          sudo apt-get install -y jq curl pandoc
+          sudo apt-get install -y jq pandoc
 
       - name: create payload
         run: |
@@ -82,23 +82,24 @@ jobs:
           RM_VERSION_ID: ${{ inputs.rm_version_id }}
           RM_KEY: ${{ secrets.rm_key }}
 
-      - name: send to redmine
-        run: |
-          curl -s -X POST -H "Content-Type: application/json" -d "@body.json" "$RM_URL/issues.json" > issue.txt
-        env:
-          RM_URL: ${{ inputs.rm_url }}
-
-      - name: Debug
-        id: package
+      - name: get payload
+        id: body
         uses: juliangruber/read-file-action@v1
         with:
-          path: ./issue.txt
+          path: ./body.json
+
+      - name: send to redmine
+        id: sender
+        uses: fjogeleit/http-request-action@master
+        with:
+          url: "${{ inputs.rm_url }}/issues.json"
+          method: "POST"
+          data: ${{ steps.body.outputs.content }}
 
       - name: update pull request
         run: |
-          TaskId=$(cat issue.txt | jq '.issue.id')
+          TaskId=$(echo $INDEX | jq '.issue.id')
           if [ -z "$TaskId" ]; then
-          cat issue.txt
           exit 1
           else
           gh pr comment "$PR_URL" -b "Added to Redmine as [Task $TaskId]($RM_URL/issues/$TaskId)";
@@ -107,4 +108,4 @@ jobs:
           PR_URL: ${{ inputs.pr_url }}
           RM_URL: ${{ inputs.rm_url }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          INDEX: ${{ steps.package.outputs.content }}
+          INDEX: ${{ steps.sender.outputs.response }}
