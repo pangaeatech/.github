@@ -1,0 +1,84 @@
+# Adds a new issue to Redmine for the specified pull request.
+#
+# Example Usage:
+# --------------
+# name: My favorite workflow
+# on:
+#   pull_request:
+#     types: [opened]
+# jobs:
+#   add-to-redmine:
+#     if: ${{ github.actor == 'dependabot[bot]' }}
+#     permissions:
+#       contents: read
+#       pull-requests: write
+#     uses: pangaeatech/.github/.github/workflows/add-to-redmine.yml@main
+#     with:
+#       pr_url: ${{github.event.pull_request.html_url}}
+#       pr_subject: ${{github.event.pull_request.title}}
+#       pr_body: ${{github.event.pull_request.body}}
+#       rm_url: "https://redmine.mycompany.com/"
+#       rm_project_id: "testproject"
+#       rm_tracker_id: 13
+#       rm_version_id: 10
+#     secrets:
+#       rm_key: ${{ SECRETS.REDMINE_API_KEY }}
+
+name: Add To Redmine
+on:
+  workflow_call:
+    inputs:
+      pr_url:
+        required: true
+        type: string
+      pr_subject:
+        required: true
+        type: string
+      pr_body:
+        required: false
+        type: string
+      rm_url:
+        required: true
+        type: string
+      rm_project_id:
+        required: true
+        type: string
+      rm_tracker_id:
+        required: false
+        type: number
+      rm_version_id:
+        required: false
+        type: number
+    secrets:
+      rm_key:
+        required: true
+jobs:
+  annotate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Add task to redmine
+        run: |
+          sudo apt-get install -y jq curl
+          jq --null-input \
+             --arg key "$RM_KEY" \
+             --arg subj "$RM_SUBJECT" \
+             --arg desc "Pull Request: \"$PR_URL\":$PR_URL
+
+             $RM_BODY" \
+             --arg proj "$RM_PROJECT_ID" \
+             --argjson trac "$RM_TRACKER_ID" \
+             --argjson vers "$RM_VERSION_ID" \
+             '{key:$key,issue:{project_id:$proj,tracker_id:$trac,subject:$subj,description:$desc,fixed_version_id:$vers}}' > body.json
+          curl -s -X POST -H "Content-Type: application/json" -d "@body.json" "$RM_URL/issues.json" | jq '.issue.id' > issue.txt
+          TaskId=$(cat issue.txt)
+          gh pr comment "$PR_URL" -b "Added to Redmine as [Task $TaskId]($RM_URL/issues/$TaskId)";
+        env:
+          PR_URL: ${{ inputs.pr_url }}
+          PR_SUBJECT: ${{ inputs.pr_subject }}
+          PR_BODY: ${{ inputs.pr_body }}
+          RM_URL: ${{ inputs.rm_url }}
+          RM_PROJECT_ID: ${{ inputs.rm_project_id }}
+          RM_TRACKER_ID: ${{ inputs.rm_tracker_id || "null" }}
+          RM_VERSION_ID: ${{ inputs.rm_version_id || "null" }}
+          RM_KEY: ${{ secrets.rm_key }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
