@@ -45,10 +45,10 @@ on:
         type: string
       rm_tracker_id:
         required: false
-        type: number
+        type: string
       rm_version_id:
         required: false
-        type: number
+        type: string
     secrets:
       rm_key:
         required: true
@@ -66,8 +66,8 @@ jobs:
 
              $RM_BODY" \
              --arg proj "$RM_PROJECT_ID" \
-             --argjson trac "$RM_TRACKER_ID" \
-             --argjson vers "$RM_VERSION_ID" \
+             --arg trac "$RM_TRACKER_ID" \
+             --arg vers "$RM_VERSION_ID" \
              '{key:$key,issue:{project_id:$proj,tracker_id:$trac,subject:$subj,description:$desc,fixed_version_id:$vers}}' > body.json
           curl -s -X POST -H "Content-Type: application/json" -d "@body.json" "$RM_URL/issues.json" | jq '.issue.id' > issue.txt
           TaskId=$(cat issue.txt)
@@ -78,7 +78,7 @@ jobs:
           PR_BODY: ${{ inputs.pr_body }}
           RM_URL: ${{ inputs.rm_url }}
           RM_PROJECT_ID: ${{ inputs.rm_project_id }}
-          RM_TRACKER_ID: ${{ inputs.rm_tracker_id || "null" }}
-          RM_VERSION_ID: ${{ inputs.rm_version_id || "null" }}
+          RM_TRACKER_ID: ${{ inputs.rm_tracker_id }}
+          RM_VERSION_ID: ${{ inputs.rm_version_id }}
           RM_KEY: ${{ secrets.rm_key }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
