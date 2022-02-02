@@ -58,20 +58,26 @@ jobs:
     steps:
       - name: Add task to redmine
         run: |
-          sudo apt-get install -y jq curl
+          sudo apt-get install -y jq curl pandoc
+          BODY=$(echo "Pull Request: [$PR_URL]($PR_URL)
+
+             $RM_BODY" | pandoc -f gfm -t textile);
           jq --null-input \
              --arg key "$RM_KEY" \
              --arg subj "$RM_SUBJECT" \
-             --arg desc "Pull Request: \"$PR_URL\":$PR_URL
-
-             $RM_BODY" \
+             --arg desc "$BODY" \
              --arg proj "$RM_PROJECT_ID" \
              --arg trac "$RM_TRACKER_ID" \
              --arg vers "$RM_VERSION_ID" \
              '{key:$key,issue:{project_id:$proj,tracker_id:$trac,subject:$subj,description:$desc,fixed_version_id:$vers}}' > body.json
-          curl -s -X POST -H "Content-Type: application/json" -d "@body.json" "$RM_URL/issues.json" | jq '.issue.id' > issue.txt
-          TaskId=$(cat issue.txt)
+          curl -s -X POST -H "Content-Type: application/json" -d "@body.json" "$RM_URL/issues.json" > issue.txt
+          TaskId=$(cat issue.txt | jq '.issue.id')
+          if [ -z "$TaskId" ]; then
+          cat issue.txt
+          exit 1
+          else
           gh pr comment "$PR_URL" -b "Added to Redmine as [Task $TaskId]($RM_URL/issues/$TaskId)";
+          fi;
         env:
           PR_URL: ${{ inputs.pr_url }}
           PR_SUBJECT: ${{ inputs.pr_subject }}
