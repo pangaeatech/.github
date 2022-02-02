@@ -88,6 +88,12 @@ jobs:
         env:
           RM_URL: ${{ inputs.rm_url }}
 
+      - name: Debug
+        id: package
+        uses: juliangruber/read-file-action@v1
+        with:
+          path: ./issue.txt
+
       - name: update pull request
         run: |
           TaskId=$(cat issue.txt | jq '.issue.id')
@@ -101,3 +107,4 @@ jobs:
           PR_URL: ${{ inputs.pr_url }}
           RM_URL: ${{ inputs.rm_url }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          INDEX: ${{ steps.package.outputs.content }}
