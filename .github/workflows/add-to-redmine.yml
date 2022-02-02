@@ -56,9 +56,12 @@ jobs:
   annotate:
     runs-on: ubuntu-latest
     steps:
-      - name: Add task to redmine
+      - name: setup environment
         run: |
           sudo apt-get install -y jq curl pandoc
+
+      - name: create payload
+        run: |
           BODY=$(echo "Pull Request: [$PR_URL]($PR_URL)
 
              $RM_BODY" | pandoc -f gfm -t textile);
@@ -70,7 +73,23 @@ jobs:
              --arg trac "$RM_TRACKER_ID" \
              --arg vers "$RM_VERSION_ID" \
              '{key:$key,issue:{project_id:$proj,tracker_id:$trac,subject:$subj,description:$desc,fixed_version_id:$vers}}' > body.json
+        env:
+          PR_URL: ${{ inputs.pr_url }}
+          PR_SUBJECT: ${{ inputs.pr_subject }}
+          PR_BODY: ${{ inputs.pr_body }}
+          RM_PROJECT_ID: ${{ inputs.rm_project_id }}
+          RM_TRACKER_ID: ${{ inputs.rm_tracker_id }}
+          RM_VERSION_ID: ${{ inputs.rm_version_id }}
+          RM_KEY: ${{ secrets.rm_key }}
+
+      - name: send to redmine
+        run: |
           curl -s -X POST -H "Content-Type: application/json" -d "@body.json" "$RM_URL/issues.json" > issue.txt
+        env:
+          RM_URL: ${{ inputs.rm_url }}
+
+      - name: update pull request
+        run: |
           TaskId=$(cat issue.txt | jq '.issue.id')
           if [ -z "$TaskId" ]; then
           cat issue.txt
@@ -80,11 +99,5 @@ jobs:
           fi;
         env:
           PR_URL: ${{ inputs.pr_url }}
-          PR_SUBJECT: ${{ inputs.pr_subject }}
-          PR_BODY: ${{ inputs.pr_body }}
           RM_URL: ${{ inputs.rm_url }}
-          RM_PROJECT_ID: ${{ inputs.rm_project_id }}
-          RM_TRACKER_ID: ${{ inputs.rm_tracker_id }}
-          RM_VERSION_ID: ${{ inputs.rm_version_id }}
-          RM_KEY: ${{ secrets.rm_key }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
