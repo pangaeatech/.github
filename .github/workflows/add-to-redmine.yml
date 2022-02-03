@@ -96,7 +96,7 @@ jobs:
           cat issue.txt
           exit 1
           else
-          gh pr comment "$PR_URL" -b "Added to Redmine as [Task $TaskId]($RM_URL/issues/$TaskId)";
+          gh pr comment "$PR_URL" -b "Added as [Redmine Task $TaskId]($RM_URL/issues/$TaskId)";
           fi;
         env:
           PR_URL: ${{ inputs.pr_url }}

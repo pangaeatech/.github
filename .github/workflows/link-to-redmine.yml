@@ -79,7 +79,7 @@ jobs:
              --arg fld "$RM_FIELD_ID" \
              '{key:$key,issue:{notes:$body,custom_fields:[{value:$prnum,id:$fld}]}}' > body.json
           curl -s -X PUT -H "Content-Type: application/json" -d "@body.json" "${RM_URL}/issues/${RM_ISSUE}.json"
-          gh pr comment "$PR_URL" -b "Linked to Redmine [Task ${RM_ISSUE}]($RM_URL/issues/${RM_ISSUE})";
+          gh pr comment "$PR_URL" -b "Linked to [Redmine Task ${RM_ISSUE}]($RM_URL/issues/${RM_ISSUE})";
         env:
           PR_URL: ${{ inputs.pr_url }}
           PR_NUM: ${{ Inputs.pr_num }}
