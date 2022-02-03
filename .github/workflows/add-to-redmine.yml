@@ -68,6 +68,7 @@ on:
         type: number
     secrets:
       rm_key:
+        # The REST API Key of the redmine user to post as
         required: true
 jobs:
   annotate:
@@ -76,7 +77,7 @@ jobs:
       - name: Add task to redmine
         run: |
           sudo apt-get install -y jq curl pandoc
-          BODY=$(echo "Pull Request: [$PR_URL]($PR_URL)
+          BODY=$(echo "Linked to [Pull Request $PR_NUM]($PR_URL)
 
              $PR_BODY" | pandoc -f gfm -t html | pandoc -f html -t textile);
           jq --null-input \
@@ -86,7 +87,9 @@ jobs:
              --arg proj "$RM_PROJECT_ID" \
              --arg trac "$RM_TRACKER_ID" \
              --arg vers "$RM_VERSION_ID" \
-             '{key:$key,issue:{project_id:$proj,tracker_id:$trac,subject:$subj,description:$desc,fixed_version_id:$vers,custom_fields:[{"value":"$PR_NUM","id":$RM_FIELD_ID}]}}' > body.json
+             --arg prnum "$PR_NUM" \
+             --arg fld "$RM_FIELD_ID" \
+             '{key:$key,issue:{project_id:$proj,tracker_id:$trac,subject:$subj,description:$desc,fixed_version_id:$vers,custom_fields:[{value:$prnum,id:$fld}]}}' > body.json
           curl -s -X POST -H "Content-Type: application/json" -d "@body.json" "$RM_URL/issues.json" | jq '.issue.id' > issue.txt
           TaskId=$(cat issue.txt)
           if [ -z "$TaskId" ]; then

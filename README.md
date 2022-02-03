@@ -30,7 +30,7 @@ jobs:
 
 ![Example Output](images/annotate-npm-dependencies.png)
 
-### 2. [Add To Redmine](.github/workflows/add-to-redmine.yml)
+### 2. [Add to Redmine](.github/workflows/add-to-redmine.yml)
 
 Adds a new issue to your [Redmine](https://redmine.org/) deployment
 for the current pull request. Adds a link to the new issue to the pull request.
@@ -58,6 +58,44 @@ jobs:
       rm_project_id: "testproject"
       rm_tracker_id: 13
       rm_version_id: 10
+      rm_field_id: 11
+    secrets:
+      rm_key: ${{ secrets.REDMINE_API_KEY }}
+```
+
+### 3. [Link to Redmine](.github/workflows/link-to-redmine.yml)
+
+Links the pull request to an existing issue in your [Redmine](https://redmine.org/) deployment.
+
+#### Example Usage:
+
+```yaml
+name: My favorite workflow
+on:
+  pull_request:
+    types: [opened]
+jobs:
+  extract-task-num:
+    id: extract
+    uses: frabert/replace-string-action@v2.0
+    with:
+      pattern: "^(task|issue|bug)(\d+)-.*$"
+      flags: "i"
+      string: "${{ github.head_ref }}"
+      replace-with: "$1"
+
+  link-to-redmine:
+    needs: extract
+    if: ${{ !!github.extract.outputs.replaced }}
+    permissions:
+      contents: read
+      pull-requests: write
+    uses: pangaeatech/.github/.github/workflows/link-to-redmine.yml@main
+    with:
+      pr_num: ${{github.event.pull_request.number}}
+      pr_url: ${{github.event.pull_request.html_url}}
+      rm_url: "https://redmine.mycompany.com/"
+      rm_issue: ${{ github.extract.outputs.replaced }}
       rm_field_id: 11
     secrets:
       rm_key: ${{ secrets.REDMINE_API_KEY }}

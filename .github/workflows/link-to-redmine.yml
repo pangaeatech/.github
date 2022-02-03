@@ -1,0 +1,86 @@
+# Links an existing issue in Redmine to the specified pull request.
+#
+# Example Usage:
+# --------------
+# name: My favorite workflow
+# on:
+#   pull_request:
+#     types: [opened]
+# jobs:
+#   extract-task-num:
+#     id: extract
+#     uses: frabert/replace-string-action@v2.0
+#     with:
+#       pattern: "^(task|issue|bug)(\d+)-.*$"
+#       flags: "i"
+#       string: "${{ github.head_ref }}"
+#       replace-with: "$1"
+#
+#   link-to-redmine:
+#     needs: extract
+#     if: ${{ !!github.extract.outputs.replaced }}
+#     permissions:
+#       contents: read
+#       pull-requests: write
+#     uses: pangaeatech/.github/.github/workflows/link-to-redmine.yml@main
+#     with:
+#       pr_num: ${{github.event.pull_request.number}}
+#       pr_url: ${{github.event.pull_request.html_url}}
+#       rm_url: "https://redmine.mycompany.com/"
+#       rm_issue: ${{ github.extract.outputs.replaced }}
+#       rm_field_id: 11
+#     secrets:
+#       rm_key: ${{ secrets.REDMINE_API_KEY }}
+
+name: Link To Redmine
+on:
+  workflow_call:
+    inputs:
+      pr_num:
+        # The Pull Request Number
+        required: true
+        type: number
+      pr_url:
+        # The Pull Request URL
+        required: true
+        type: string
+      rm_url:
+        # The Redmine URL
+        required: true
+        type: string
+      rm_issue:
+        # The redmine issue to link to
+        required: true
+        type: number
+      rm_field_id:
+        # The redmine custom field ID to store the PR number in
+        required: true
+        type: number
+    secrets:
+      rm_key:
+        # The REST API Key of the redmine user to post as
+        required: true
+jobs:
+  annotate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Link task to redmine
+        run: |
+          sudo apt-get install -y jq curl
+          BODY=$(echo "Linked to \"Pull Request $PR_NUM\":$PR_URL")
+          jq --null-input \
+             --arg key "$RM_KEY" \
+             --arg body "$BODY" \
+             --arg prnum "$PR_NUM" \
+             --arg fld "$RM_FIELD_ID" \
+             '{key:$key,issue:{notes:$body,custom_fields:[{value:$prnum,id:$fld}]}}' > body.json
+          curl -s -X PUT -H "Content-Type: application/json" -d "@body.json" "${RM_URL}/issues/${RM_ISSUE}.json"
+          gh pr comment "$PR_URL" -b "Linked to Redmine [Task ${RM_ISSUE}]($RM_URL/issues/${RM_ISSUE})";
+        env:
+          PR_URL: ${{ inputs.pr_url }}
+          PR_NUM: ${{ Inputs.pr_num }}
+          RM_ISSUE: ${{ inputs.rm_issue }}
+          RM_FIELD_ID: ${{ inputs.rm_field_id }}
+          RM_URL: ${{ inputs.rm_url }}
+          RM_KEY: ${{ secrets.rm_key }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -26,9 +26,11 @@ on:
   workflow_call:
     inputs:
       pr_url:
+        # The Pull Request URL
         required: true
         type: string
       branch:
+        # The Pull Request Branch Name
         required: true
         type: string
 jobs:
