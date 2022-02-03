@@ -86,7 +86,7 @@ jobs:
             pattern: "^(task|issue|bug)(\\d+)-.*$"
             flags: "i"
             string: "${{ github.head_ref }}"
-            replace-with: "$1"
+            replace-with: "$2"
 
   link-to-redmine:
     needs: extractnum
