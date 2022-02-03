@@ -90,7 +90,7 @@ jobs:
 
   link-to-redmine:
     needs: extractnum
-    if: ${{ !!needs.extractnum.outputs.issue }}
+    if: ${{ needs.extractnum.outputs.issue != github.head_ref }}
     permissions:
       contents: read
       pull-requests: write
