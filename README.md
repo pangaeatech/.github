@@ -50,6 +50,7 @@ jobs:
       pull-requests: write
     uses: pangaeatech/.github/.github/workflows/add-to-redmine.yml@main
     with:
+      pr_num: ${{github.event.pull_request.number}}
       pr_url: ${{github.event.pull_request.html_url}}
       pr_subject: ${{github.event.pull_request.title}}
       pr_body: ${{github.event.pull_request.body}}
@@ -57,6 +58,7 @@ jobs:
       rm_project_id: "testproject"
       rm_tracker_id: 13
       rm_version_id: 10
+      rm_field_id: 11
     secrets:
-      rm_key: ${{ SECRETS.REDMINE_API_KEY }}
+      rm_key: ${{ secrets.REDMINE_API_KEY }}
 ```

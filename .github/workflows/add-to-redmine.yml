@@ -14,6 +14,7 @@
 #       pull-requests: write
 #     uses: pangaeatech/.github/.github/workflows/add-to-redmine.yml@main
 #     with:
+#       pr_num: ${{github.event.pull_request.number}}
 #       pr_url: ${{github.event.pull_request.html_url}}
 #       pr_subject: ${{github.event.pull_request.title}}
 #       pr_body: ${{github.event.pull_request.body}}
@@ -21,6 +22,7 @@
 #       rm_project_id: "testproject"
 #       rm_tracker_id: 13
 #       rm_version_id: 10
+#       rm_field_id: 11
 #     secrets:
 #       rm_key: ${{ secrets.REDMINE_API_KEY }}
 
@@ -28,27 +30,42 @@ name: Add To Redmine
 on:
   workflow_call:
     inputs:
+      pr_num:
+        # The Pull Request Number
+        required: true
+        type: number
       pr_url:
+        # The Pull Request URL
         required: true
         type: string
       pr_subject:
+        # The Pull Request Subject
         required: true
         type: string
       pr_body:
+        # The Pull Request Description (optional)
         required: false
         type: string
       rm_url:
+        # The Redmine URL
         required: true
         type: string
       rm_project_id:
+        # The Project's unique id
         required: true
         type: string
       rm_tracker_id:
+        # The redmine tracker ID to create the issue in (optional)
         required: false
-        type: string
+        type: number
       rm_version_id:
+        # The redmine milestone ID to create the issue in (optional)
         required: false
-        type: string
+        type: number
+      rm_field_id:
+        # The redmine custom field ID to store the PR number in (optional)
+        required: false
+        type: number
     secrets:
       rm_key:
         required: true
@@ -69,7 +86,7 @@ jobs:
              --arg proj "$RM_PROJECT_ID" \
              --arg trac "$RM_TRACKER_ID" \
              --arg vers "$RM_VERSION_ID" \
-             '{key:$key,issue:{project_id:$proj,tracker_id:$trac,subject:$subj,description:$desc,fixed_version_id:$vers}}' > body.json
+             '{key:$key,issue:{project_id:$proj,tracker_id:$trac,subject:$subj,description:$desc,fixed_version_id:$vers,custom_fields:[{"value":"$PR_NUM","id":$RM_FIELD_ID}]}}' > body.json
           curl -s -X POST -H "Content-Type: application/json" -d "@body.json" "$RM_URL/issues.json" | jq '.issue.id' > issue.txt
           TaskId=$(cat issue.txt)
           if [ -z "$TaskId" ]; then
@@ -79,11 +96,13 @@ jobs:
           fi;
         env:
           PR_URL: ${{ inputs.pr_url }}
+          PR_NUM: ${{ Inputs.pr_num }}
           PR_SUBJECT: ${{ inputs.pr_subject }}
           PR_BODY: ${{ inputs.pr_body }}
           RM_PROJECT_ID: ${{ inputs.rm_project_id }}
           RM_TRACKER_ID: ${{ inputs.rm_tracker_id }}
           RM_VERSION_ID: ${{ inputs.rm_version_id }}
+          RM_FIELD_ID: ${{ inputs.rm_field_id }}
           RM_URL: ${{ inputs.rm_url }}
           RM_KEY: ${{ secrets.rm_key }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
