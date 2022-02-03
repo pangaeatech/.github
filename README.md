@@ -79,7 +79,7 @@ jobs:
     id: extract
     uses: frabert/replace-string-action@v2.0
     with:
-      pattern: "^(task|issue|bug)(\d+)-.*$"
+      pattern: "^(task|issue|bug)(\\d+)-.*$"
       flags: "i"
       string: "${{ github.head_ref }}"
       replace-with: "$1"
