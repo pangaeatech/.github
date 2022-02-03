@@ -55,7 +55,7 @@ on:
       rm_issue:
         # The redmine issue to link to
         required: true
-        type: number
+        type: string
       rm_field_id:
         # The redmine custom field ID to store the PR number in
         required: true
