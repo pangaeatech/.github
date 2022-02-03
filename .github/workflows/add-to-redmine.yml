@@ -90,9 +90,10 @@ jobs:
              --arg prnum "$PR_NUM" \
              --arg fld "$RM_FIELD_ID" \
              '{key:$key,issue:{project_id:$proj,tracker_id:$trac,subject:$subj,description:$desc,fixed_version_id:$vers,custom_fields:[{value:$prnum,id:$fld}]}}' > body.json
-          curl -s -X POST -H "Content-Type: application/json" -d "@body.json" "$RM_URL/issues.json" | jq '.issue.id' > issue.txt
-          TaskId=$(cat issue.txt)
-          if [ -z "$TaskId" ]; then
+          curl -s -X POST -H "Content-Type: application/json" -d "@body.json" "$RM_URL/issues.json" > issue.txt
+          TaskId=$(cat issue.txt | jq '.issue.id')
+          if [ -z "$TaskId" ] || [ "$TaskId" == "null" ]; then
+          cat issue.txt
           exit 1
           else
           gh pr comment "$PR_URL" -b "Added to Redmine as [Task $TaskId]($RM_URL/issues/$TaskId)";
