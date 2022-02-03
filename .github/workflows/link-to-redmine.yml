@@ -7,18 +7,22 @@
 #   pull_request:
 #     types: [opened]
 # jobs:
-#   extract-task-num:
-#     id: extract
-#     uses: frabert/replace-string-action@v2.0
-#     with:
-#       pattern: "^(task|issue|bug)(\\d+)-.*$"
-#       flags: "i"
-#       string: "${{ github.head_ref }}"
-#       replace-with: "$1"
+#   extractnum:
+#     runs-on: ubuntu-latest
+#       outputs:
+#         issue: ${{ steps.extract.outputs.replaced }}
+#       steps:
+#         - id: extract
+#           uses: frabert/replace-string-action@v2.0
+#           with:
+#             pattern: "^(task|issue|bug)(\\d+)-.*$"
+#             flags: "i"
+#             string: "${{ github.head_ref }}"
+#             replace-with: "$1"
 #
 #   link-to-redmine:
-#     needs: extract
-#     if: ${{ !!github.extract.outputs.replaced }}
+#     needs: extractnum
+#     if: ${{ !!needs.extractnum.outputs.issue }}
 #     permissions:
 #       contents: read
 #       pull-requests: write
@@ -27,7 +31,7 @@
 #       pr_num: ${{github.event.pull_request.number}}
 #       pr_url: ${{github.event.pull_request.html_url}}
 #       rm_url: "https://redmine.mycompany.com/"
-#       rm_issue: ${{ github.extract.outputs.replaced }}
+#       rm_issue: ${{ needs.extractnum.outputs.issue }}
 #       rm_field_id: 11
 #     secrets:
 #       rm_key: ${{ secrets.REDMINE_API_KEY }}
