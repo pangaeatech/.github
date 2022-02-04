@@ -82,7 +82,7 @@ jobs:
           gh pr comment "$PR_URL" -b "Linked to [Redmine Task ${RM_ISSUE}]($RM_URL/issues/${RM_ISSUE})";
         env:
           PR_URL: ${{ inputs.pr_url }}
-          PR_NUM: ${{ Inputs.pr_num }}
+          PR_NUM: ${{ inputs.pr_num }}
           RM_ISSUE: ${{ inputs.rm_issue }}
           RM_FIELD_ID: ${{ inputs.rm_field_id }}
           RM_URL: ${{ inputs.rm_url }}
