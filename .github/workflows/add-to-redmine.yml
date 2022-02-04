@@ -68,7 +68,9 @@ on:
         type: number
     secrets:
       rm_key:
-        # The REST API Key of the redmine user to post as
+        # The REST API Key of the redmine user to post the issue as
+        # NOTE: This user MUST have permission to "Add issues" to the
+        #       project specified by rm_project_id
         required: true
 jobs:
   annotate:

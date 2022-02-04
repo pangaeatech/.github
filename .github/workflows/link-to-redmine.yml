@@ -63,6 +63,8 @@ on:
     secrets:
       rm_key:
         # The REST API Key of the redmine user to post as
+        # NOTE: This user MUST have permission to "Edit issues" and also
+        #       to "Add notes" on the project specified by rm_project_id
         required: true
 jobs:
   annotate:
