@@ -79,7 +79,7 @@ jobs:
           sudo apt-get install -y jq curl pandoc
           BODY=$(echo "Linked to [Pull Request $PR_NUM]($PR_URL)
 
-             $PR_BODY" | pandoc -f gfm -t html | pandoc -f html -t textile);
+             $PR_BODY" | pandoc -f gfm -t html | pandoc -f html -t textile | sed -e 's/<tt>/<code>/g' -e 's/<\/tt>/<\/code>/g' -e 's/<hr *\/>/----/g');
           jq --null-input \
              --arg key "$RM_KEY" \
              --arg subj "$PR_SUBJECT" \
