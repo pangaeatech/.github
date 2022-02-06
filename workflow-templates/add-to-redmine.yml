@@ -1,0 +1,24 @@
+name: Add dependabot PRs to redmine
+on:
+  pull_request:
+    types: [opened, reopened]
+
+jobs:
+  add-to-redmine:
+    if: ${{ github.event.pull_request.user.login == 'dependabot[bot]' }}
+    permissions:
+      contents: read
+      pull-requests: write
+    uses: pangaeatech/.github/.github/workflows/add-to-redmine.yml@main
+    with:
+      pr_num: ${{github.event.pull_request.number}}
+      pr_url: ${{github.event.pull_request.html_url}}
+      pr_subject: ${{github.event.pull_request.title}}
+      pr_body: ${{github.event.pull_request.body}}
+      rm_url: "https://redmine.mycompany.com/" # Set to your URL
+      rm_project_id: "projectid" # Set to your project id
+      rm_tracker_id: 13 # Set to your tracker id (optional)
+      rm_version_id: 10 # Set to your version id (optional)
+      rm_field_id: 11 # Set to your field id (optional)
+    secrets:
+      rm_key: ${{ secrets.REDMINE_API_KEY }}

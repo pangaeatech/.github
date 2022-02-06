@@ -1,0 +1,23 @@
+name: NPM Audit Production Dependencies on default branch
+
+on:
+  push:
+    branches: [$default-branch]
+  schedule:
+    - cron: "0 0 * * *"
+
+jobs:
+  npm-audit:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/setup-node@master
+        with:
+          node-version: "14"
+
+      - run: npm audit --production
+        working-directory: ./ # Set to your working directory
