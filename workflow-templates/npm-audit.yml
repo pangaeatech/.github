@@ -1,4 +1,4 @@
-name: NPM Audit Production Dependencies on default branch
+name: NPM Audit
 
 on:
   push:

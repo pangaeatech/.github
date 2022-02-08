@@ -1,4 +1,4 @@
-name: Annotate NPM dependencies
+name: Annotate NPM Dependencies
 on:
   pull_request:
     types: [opened, synchronize, reopened]

@@ -1,4 +1,4 @@
-name: Add dependabot PRs to redmine
+name: Add dependabot PRs to Redmine
 on:
   pull_request:
     types: [opened, reopened]
