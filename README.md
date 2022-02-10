@@ -2,6 +2,8 @@
 
 A collection of publicly available [reusable workflows](https://docs.github.com/en/actions/using-workflows/reusing-workflows).
 
+The reusable workflows themselves can be found in the [.github/workflows](.github/workflows) folder.  A collection of template workflows which demonstrate example of how to use these workflows can be found in the [workflow-templates](./workflow-templates) folder.
+
 ### 1. [Annotate NPM Dependencies](.github/workflows/annotate-npm-dependencies.yml)
 
 Updates a pull request created by dependabot for an NPM-based dependency to
