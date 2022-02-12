@@ -2,7 +2,7 @@
 
 A collection of publicly available [reusable workflows](https://docs.github.com/en/actions/using-workflows/reusing-workflows).
 
-The reusable workflows themselves can be found in the [.github/workflows](.github/workflows) folder.  A collection of template workflows which demonstrate example of how to use these workflows can be found in the [workflow-templates](./workflow-templates) folder.
+The reusable workflows themselves can be found in the [.github/workflows](.github/workflows) folder. A collection of template workflows which demonstrate example of how to use these workflows can be found in the [workflow-templates](./workflow-templates) folder.
 
 ### 1. [Annotate NPM Dependencies](.github/workflows/annotate-npm-dependencies.yml)
 
@@ -102,6 +102,35 @@ jobs:
       pr_url: ${{github.event.pull_request.html_url}}
       rm_url: "https://redmine.mycompany.com/"
       rm_issue: ${{ needs.extractnum.outputs.issue }}
+      rm_field_id: 11
+    secrets:
+      rm_key: ${{ secrets.REDMINE_API_KEY }}
+```
+
+### 4. [Update Redmine](.github/workflows/update-redmine.yml)
+
+Updates any issues in your [Redmine](https://redmine.org/) deployment which are linked to the specified pull request.
+
+#### Example Usage:
+
+```yaml
+name: My favorite workflow
+on:
+  pull_request_review:
+    types: [submitted]
+jobs:
+  update-redmine:
+    permissions:
+      contents: read
+    uses: pangaeatech/.github/.github/workflows/update-redmine.yml@main
+    with:
+      pr_num: ${{github.event.pull_request.number}}
+      cmt_url: ${{github.event.review.html_url}}
+      cmt_user: ${{github.event.review.user.login}}
+      cmt_body: ${{github.event.review.body}}
+      cmt_action: ${{github.event.review.state}}
+      rm_url: "https://redmine.mycompany.com/"
+      rm_project_id: "testproject"
       rm_field_id: 11
     secrets:
       rm_key: ${{ secrets.REDMINE_API_KEY }}
