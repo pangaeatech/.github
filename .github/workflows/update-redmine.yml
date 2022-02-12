@@ -87,7 +87,7 @@ jobs:
           CMT_URL: ${{ inputs.cmt_url }}
           CMT_USER: ${{ inputs.cmt_user }}
           CMT_BODY: ${{ inputs.cmt_body }}
-          CMT_ACT: ${{ inputs.cmt_action || "commented" }}
+          CMT_ACT: ${{ inputs.cmt_action || 'commented' }}
           RM_PROJ: ${{ inputs.rm_project_id }}
           RM_FIELD_ID: ${{ inputs.rm_field_id }}
           RM_URL: ${{ inputs.rm_url }}
