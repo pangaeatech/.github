@@ -17,9 +17,6 @@
 #     with:
 #       pr_url: ${{github.event.pull_request.html_url}}
 #       branch: ${{github.head_ref}}
-#
-# NOTE: This workflow is currently incompatible with the
-# "pull-request-branch-name.separator" dependabot configuration setting.
 
 name: Annotate NPM Dependencies
 on:
@@ -39,7 +36,7 @@ jobs:
     steps:
       - name: Retrieve dependabot metadata
         id: metadata
-        uses: dependabot/fetch-metadata@v1.1.1
+        uses: dependabot/fetch-metadata@37d2f78
         with:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
       - name: Checkout source code
@@ -47,22 +44,16 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v2
       - name: Generate comment
+        if: ${{ steps.metadata.outputs.package-ecosystem == "npm_and_yarn" }}
         run: |
-          readarray -d "/" -t parts<<<"${BRANCH}";
-          if [ "${parts[0]}" = "dependabot" -a "${parts[1]}" = "npm_and_yarn" ]; then
-          dir="/";
-          if [ ! -z ${parts[3]} ]; then dir="${parts[2]}"; cd $dir; fi;
           npm install;
-          echo "### \`${PR_DEPS//,/, }\` in \`${dir}\`" > body.txt;
+          echo "### \`${PR_DEPS//,/, }\` in \`${PR_DIR}\`" > body.txt;
           echo "\`\`\`" >> body.txt;
           npm ls ${PR_DEPS//,/ } >> body.txt;
           echo "\`\`\`" >> body.txt;
           gh pr comment "$PR_URL" -F body.txt;
-          else
-          echo "Skipping ${BRANCH}"
-          fi;
         env:
           PR_URL: ${{ inputs.pr_url }}
-          BRANCH: ${{ inputs.branch }}
+          PR_DIR: ${{ steps.metadata.outputs.directory }}
           PR_DEPS: ${{ steps.metadata.outputs.dependency-names }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
