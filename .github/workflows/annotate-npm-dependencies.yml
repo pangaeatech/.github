@@ -44,7 +44,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v2
       - name: Generate comment
-        if: ${{ steps.metadata.outputs.package-ecosystem == "npm_and_yarn" }}
+        if: ${{ steps.metadata.outputs.package-ecosystem == 'npm_and_yarn' }}
         run: |
           npm install;
           echo "### \`${PR_DEPS//,/, }\` in \`${PR_DIR}\`" > body.txt;
