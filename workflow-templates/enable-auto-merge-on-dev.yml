@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - id: metadata
-        uses: dependabot/fetch-metadata@v1.1.1
+        uses: dependabot/fetch-metadata@v1.2.0
         with:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
       - if: ${{ steps.metadata.outputs.dependency-type == 'direct:development' }}
