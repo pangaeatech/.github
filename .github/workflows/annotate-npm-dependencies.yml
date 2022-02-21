@@ -57,3 +57,4 @@ jobs:
           PR_DIR: ${{ steps.metadata.outputs.directory }}
           PR_DEPS: ${{ steps.metadata.outputs.dependency-names }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        working-directory: ${{ steps.metadata.outputs.directory }}
