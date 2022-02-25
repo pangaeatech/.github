@@ -20,6 +20,7 @@ jobs:
       pr_num: ${{github.event.issue.number}}
       cmt_url: ${{github.event.comment.html_url}}
       cmt_user: ${{github.event.comment.user.login}}
+      cmt_action: "Commented on the PR:"
       cmt_body: ${{github.event.comment.body}}
       rm_url: "https://redmine.mycompany.com/" # Set to your URL
       rm_project_id: "projectid" # Set to your project id
@@ -34,6 +35,7 @@ jobs:
       pr_num: ${{github.event.pull_request.number}}
       cmt_url: ${{github.event.comment.html_url}}
       cmt_user: ${{github.event.comment.user.login}}
+      cmt_action: "Added a Review Comment to the PR:"
       cmt_body: ${{github.event.comment.body}}
       rm_url: "https://redmine.mycompany.com/" # Set to your URL
       rm_project_id: "projectid" # Set to your project id
@@ -48,8 +50,8 @@ jobs:
       pr_num: ${{github.event.pull_request.number}}
       cmt_url: ${{github.event.review.html_url}}
       cmt_user: ${{github.event.review.user.login}}
+      cmt_action: "Reviewed the PR as: **${{github.event.review.state}}**"
       cmt_body: ${{github.event.review.body}}
-      cmt_action: ${{github.event.review.state}}
       rm_url: "https://redmine.mycompany.com/" # Set to your URL
       rm_project_id: "projectid" # Set to your project id
       rm_field_id: 11 # Set to your field id
@@ -63,7 +65,7 @@ jobs:
       pr_num: ${{github.event.pull_request.number}}
       cmt_url: ${{github.event.pull_request.html_url}}
       cmt_user: ${{github.event.sender.login}}
-      cmt_action: ${{github.event.action}}
+      cmt_action: "Set the PR to: **${{github.event.action}}**"
       rm_url: "https://redmine.mycompany.com/" # Set to your URL
       rm_project_id: "projectid" # Set to your project id
       rm_field_id: 11 # Set to your field id
@@ -77,7 +79,7 @@ jobs:
       pr_num: ${{github.event.pull_request.number}}
       cmt_url: ${{github.event.pull_request.html_url}}
       cmt_user: ${{github.event.sender.login}}
-      cmt_action: "merged"
+      cmt_action: "Set the PR to: **merged**"
       rm_url: "https://redmine.mycompany.com/" # Set to your URL
       rm_project_id: "projectid" # Set to your project id
       rm_field_id: 11 # Set to your field id

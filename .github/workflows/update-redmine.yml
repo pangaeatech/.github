@@ -57,7 +57,7 @@ on:
         required: false
         type: string
       cmt_action:
-        # The Comment's action ("approved", "commented", "merged", etc)
+        # The Comment's action ("approved", "commented", "merged", etc - supports markdown)
         # Defaults to "commented" if not specified
         required: false
         type: string
@@ -74,7 +74,7 @@ jobs:
       - name: Update task in Redmine
         run: |
           sudo apt-get install -y jq curl pandoc
-          BODY=$(echo "[$CMT_USER $CMT_ACT]($CMT_URL):
+          BODY=$(echo "[$CMT_USER $CMT_ACT]($CMT_URL)
 
              $CMT_BODY" | pandoc -f gfm -t html | pandoc -f html -t textile | sed -e 's/<tt>/<code>/g' -e 's/<\/tt>/<\/code>/g' -e 's/<hr *\/>/----/g');
           curl -s -X GET -H "X-Redmine-API-Key: ${RM_KEY}" "$RM_URL/issues.json?project_id=${RM_PROJ}&cf_${RM_FIELD_ID}=${PR_NUM}&status_id=*" > issues.txt
