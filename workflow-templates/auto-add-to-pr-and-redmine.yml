@@ -26,6 +26,7 @@ jobs:
           pr_draft: true
           pr_allow_empty: true
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          destination_branch: $default-branch
 
   extractnum:
     needs: pull-request
