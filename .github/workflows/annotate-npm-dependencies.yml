@@ -46,10 +46,16 @@ jobs:
       - name: Generate comment
         if: ${{ steps.metadata.outputs.package-ecosystem == 'npm_and_yarn' }}
         run: |
-          npm install;
+          if [ -e "package-lock.json" ]; 
+          then npm ci;
+          else yarn install --frozen-lockfile;
+          fi;
           echo "### \`${PR_DEPS//,/, }\` in \`${PR_DIR}\`" > body.txt;
           echo "\`\`\`" >> body.txt;
-          npm ls ${PR_DEPS//,/ } >> body.txt;
+          if [ -e "package-lock.json" ];
+          then npm ls "${PR_DEPS//,/ }" >> body.txt;
+          else yarn list --pattern "${PR_DEPS//,/ }" >> body.txt;
+          fi;
           echo "\`\`\`" >> body.txt;
           gh pr comment "$PR_URL" -F body.txt;
         env:
