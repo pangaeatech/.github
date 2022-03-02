@@ -33,7 +33,7 @@ on:
       pr_num:
         # The Pull Request Number
         required: true
-        type: number
+        type: string
       pr_url:
         # The Pull Request URL
         required: true
