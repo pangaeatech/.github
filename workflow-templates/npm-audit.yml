@@ -19,5 +19,5 @@ jobs:
         with:
           node-version: "14"
 
-      - run: npm audit --production # Use yarn instead of npm if applicable
+      - run: npm audit --production # OR: yarn audit --groups dependencies,optionalDependencies
         working-directory: ./ # Set to your working directory
