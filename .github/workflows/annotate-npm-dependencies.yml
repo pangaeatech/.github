@@ -42,7 +42,7 @@ jobs:
       - name: Checkout source code
         uses: actions/checkout@v3
       - name: Setup Node
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
       - name: Generate comment
         if: ${{ steps.metadata.outputs.package-ecosystem == 'npm_and_yarn' }}
         run: |
