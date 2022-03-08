@@ -9,6 +9,7 @@ on:
   pull_request:
     types:
       [closed, reopened, converted_to_draft, ready_for_review, review_requested]
+
 permissions:
   contents: read
 

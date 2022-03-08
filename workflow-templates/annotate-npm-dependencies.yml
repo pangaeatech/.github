@@ -3,12 +3,13 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
 
+permissions:
+  contents: read
+  pull-requests: write
+
 jobs:
   annotate-npm-dependencies:
     if: ${{ github.event.pull_request.user.login == 'dependabot[bot]' }}
-    permissions:
-      contents: read
-      pull-requests: write
     uses: pangaeatech/.github/.github/workflows/annotate-npm-dependencies.yml@main
     with:
       pr_url: ${{ github.event.pull_request.html_url }}

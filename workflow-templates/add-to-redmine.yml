@@ -3,12 +3,13 @@ on:
   pull_request:
     types: [opened, reopened]
 
+permissions:
+  contents: read
+  pull-requests: write
+
 jobs:
   add-to-redmine:
     if: ${{ github.event.pull_request.user.login == 'dependabot[bot]' }}
-    permissions:
-      contents: read
-      pull-requests: write
     uses: pangaeatech/.github/.github/workflows/add-to-redmine.yml@main
     with:
       pr_num: ${{github.event.pull_request.number}}

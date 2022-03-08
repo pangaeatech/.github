@@ -4,6 +4,10 @@ on:
     types: [opened, reopened]
     branches: [$default-branch]
 
+permissions:
+  contents: read
+  pull-requests: write
+
 jobs:
   extractnum:
     runs-on: ubuntu-latest
@@ -21,9 +25,6 @@ jobs:
   link-to-redmine:
     needs: extractnum
     if: ${{ needs.extractnum.outputs.issue != github.head_ref }}
-    permissions:
-      contents: read
-      pull-requests: write
     uses: pangaeatech/.github/.github/workflows/link-to-redmine.yml@main
     with:
       pr_num: ${{github.event.pull_request.number}}
