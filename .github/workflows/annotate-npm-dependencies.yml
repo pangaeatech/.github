@@ -49,17 +49,17 @@ jobs:
           if [ -e "package-lock.json" ]; 
           then npm ci;
           fi;
-          echo "### \`${PR_DEPS//,/, }\` in \`${PR_DIR}\`" > $GITHUB_WORKSPACE/body.txt;
-          echo "\`\`\`" >> $GITHUB_WORKSPACE/body.txt;
+          echo "### \`${PR_DEPS//,/, }\` in \`${PR_DIR}\`" > body.txt;
+          echo "\`\`\`" >> body.txt;
           if [ -e "package-lock.json" ];
-          then npm ls "${PR_DEPS//,/ }" >> $GITHUB_WORKSPACE/body.txt;
-          else yarn list "${PR_DEPS//,/ }" >> $GITHUB_WORKSPACE/body.txt;
+          then npm ls "${PR_DEPS//,/ }" >> body.txt;
+          else yarn list "${PR_DEPS//,/ }" >> body.txt;
           fi;
-          echo "\`\`\`" >> $GITHUB_WORKSPACE/body.txt;
-          gh pr comment "$PR_URL" -F $GITHUB_WORKSPACE/body.txt;
+          echo "\`\`\`" >> body.txt;
+          gh pr comment "$PR_URL" -F body.txt;
         env:
           PR_URL: ${{ inputs.pr_url }}
           PR_DIR: ${{ steps.metadata.outputs.directory }}
           PR_DEPS: ${{ steps.metadata.outputs.dependency-names }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        working-directory: ${{ steps.metadata.outputs.directory }}
+        working-directory: "./${{ steps.metadata.outputs.directory }}"
