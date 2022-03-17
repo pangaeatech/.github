@@ -14,18 +14,18 @@ identify the direct dependencies that are impacted.
 ```yaml
 name: My favorite workflow
 on:
-  pull_request:
-    types: [opened, synchronize, reopened]
+    pull_request:
+        types: [opened, synchronize, reopened]
 jobs:
-  annotate-npm-dependencies:
-    if: ${{ github.actor == 'dependabot[bot]' }}
-    permissions:
-      contents: read
-      pull-requests: write
-    uses: pangaeatech/.github/.github/workflows/annotate-npm-dependencies.yml@main
-    with:
-      pr_url: ${{github.event.pull_request.html_url}}
-      branch: ${{github.head_ref}}
+    annotate-npm-dependencies:
+        if: ${{ github.actor == 'dependabot[bot]' }}
+        permissions:
+            contents: read
+            pull-requests: write
+        uses: pangaeatech/.github/.github/workflows/annotate-npm-dependencies.yml@main
+        with:
+            pr_url: ${{github.event.pull_request.html_url}}
+            branch: ${{github.head_ref}}
 ```
 
 #### Example Output:
@@ -42,27 +42,27 @@ for the current pull request. Adds a link to the new issue to the pull request.
 ```yaml
 name: My favorite workflow
 on:
-  pull_request:
-    types: [opened]
+    pull_request:
+        types: [opened]
 jobs:
-  add-to-redmine:
-    if: ${{ github.actor == 'dependabot[bot]' }}
-    permissions:
-      contents: read
-      pull-requests: write
-    uses: pangaeatech/.github/.github/workflows/add-to-redmine.yml@main
-    with:
-      pr_num: ${{github.event.pull_request.number}}
-      pr_url: ${{github.event.pull_request.html_url}}
-      pr_subject: ${{github.event.pull_request.title}}
-      pr_body: ${{github.event.pull_request.body}}
-      rm_url: "https://redmine.mycompany.com/"
-      rm_project_id: "testproject"
-      rm_tracker_id: 13
-      rm_version_id: 10
-      rm_field_id: 11
-    secrets:
-      rm_key: ${{ secrets.REDMINE_API_KEY }}
+    add-to-redmine:
+        if: ${{ github.actor == 'dependabot[bot]' }}
+        permissions:
+            contents: read
+            pull-requests: write
+        uses: pangaeatech/.github/.github/workflows/add-to-redmine.yml@main
+        with:
+            pr_num: ${{github.event.pull_request.number}}
+            pr_url: ${{github.event.pull_request.html_url}}
+            pr_subject: ${{github.event.pull_request.title}}
+            pr_body: ${{github.event.pull_request.body}}
+            rm_url: "https://redmine.mycompany.com/"
+            rm_project_id: "testproject"
+            rm_tracker_id: 13
+            rm_version_id: 10
+            rm_field_id: 11
+        secrets:
+            rm_key: ${{ secrets.REDMINE_API_KEY }}
 ```
 
 ### 3. [Link to Redmine](.github/workflows/link-to-redmine.yml)
@@ -116,22 +116,22 @@ Updates any issues in your [Redmine](https://redmine.org/) deployment which are 
 ```yaml
 name: My favorite workflow
 on:
-  pull_request_review:
-    types: [submitted]
+    pull_request_review:
+        types: [submitted]
 jobs:
-  update-redmine:
-    permissions:
-      contents: read
-    uses: pangaeatech/.github/.github/workflows/update-redmine.yml@main
-    with:
-      pr_num: ${{github.event.pull_request.number}}
-      cmt_url: ${{github.event.review.html_url}}
-      cmt_user: ${{github.event.review.user.login}}
-      cmt_body: ${{github.event.review.body}}
-      cmt_action: ${{github.event.review.state}}
-      rm_url: "https://redmine.mycompany.com/"
-      rm_project_id: "testproject"
-      rm_field_id: 11
-    secrets:
-      rm_key: ${{ secrets.REDMINE_API_KEY }}
+    update-redmine:
+        permissions:
+            contents: read
+        uses: pangaeatech/.github/.github/workflows/update-redmine.yml@main
+        with:
+            pr_num: ${{github.event.pull_request.number}}
+            cmt_url: ${{github.event.review.html_url}}
+            cmt_user: ${{github.event.review.user.login}}
+            cmt_body: ${{github.event.review.body}}
+            cmt_action: ${{github.event.review.state}}
+            rm_url: "https://redmine.mycompany.com/"
+            rm_project_id: "testproject"
+            rm_field_id: 11
+        secrets:
+            rm_key: ${{ secrets.REDMINE_API_KEY }}
 ```
