@@ -18,7 +18,7 @@ jobs:
       pr_url: ${{ steps.open-pr.outputs.pr_url }}
       pr_num: ${{ steps.open-pr.outputs.pr_number }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: repo-sync/pull-request@v2
         id: open-pr
         with:
