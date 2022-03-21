@@ -76,7 +76,7 @@ jobs:
           sudo apt-get install -y jq curl pandoc
           BODY=$(echo "[$CMT_USER $CMT_ACT]($CMT_URL)
 
-             $CMT_BODY" | pandoc -f gfm -t html | pandoc -f html -t textile | sed -e 's/<tt>/<code>/g' -e 's/<\/tt>/<\/code>/g' -e 's/<hr *\/>/----/g');
+             $CMT_BODY" | pandoc -f gfm -t html | pandoc -f html -t textile | LC_ALL=UTF-8 sed -e 's/<tt>/<code>/g' -e 's/<\/tt>/<\/code>/g' -e 's/<hr *\/>/----/g' -e "s/[\xF0-\xF7].../�/g");
           curl -s -X GET -H "X-Redmine-API-Key: ${RM_KEY}" "$RM_URL/issues.json?project_id=${RM_PROJ}&cf_${RM_FIELD_ID}=${PR_NUM}&status_id=*" > issues.txt
           for RM_ISSUE in $(cat issues.txt | jq '.issues[]?.id'); do
           jq --null-input --arg key "$RM_KEY" --arg body "$BODY" '{key:$key,issue:{notes:$body}}' > body.json
