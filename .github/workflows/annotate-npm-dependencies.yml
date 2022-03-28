@@ -53,7 +53,7 @@ jobs:
           echo "\`\`\`" >> body.txt;
           if [ -e "package-lock.json" ];
           then npm ls "${PR_DEPS//,/ }" >> body.txt;
-          else yarn list "${PR_DEPS//,/ }" >> body.txt;
+          else yarn why "${PR_DEPS//,/ }" >> body.txt;
           fi;
           echo "\`\`\`" >> body.txt;
           gh pr comment "$PR_URL" -F body.txt;
