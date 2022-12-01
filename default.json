@@ -26,7 +26,7 @@
       "commitMessagePrefix": "[Optional] "
     },
     {
-      "matchPackagePrefixes": ["eslint-", "@typescript-eslint/"],
+      "matchPackagePrefixes": ["eslint", "@typescript-eslint/"],
       "groupName": "eslint"
     },
     {
@@ -34,8 +34,33 @@
       "groupName": "material-ui"
     },
     {
-      "matchPackageNames": ["react", "react-dom", "react-color", "html-react-parser", "dompurify"],
+      "matchPackagePrefixes": ["antd", "@ant-design/", "moment-timezone"],
+      "groupName": "antd"
+    },
+    {
+      "matchPackageNames": [
+        "react",
+        "react-dom",
+        "react-color",
+        "html-react-parser",
+        "dompurify",
+        "react-tooltip",
+        "react-helmet",
+        "react-anchor-link-smooth-scroll",
+        "react-ga",
+        "react-social-sharing",
+        "react-beforeunload",
+        "react-icons"
+      ],
       "groupName": "react"
+    },
+    {
+      "matchPackagePrefixes": ["react-intl", "react-number-format", "browser-lang", "@lingui"],
+      "groupName": "intl"
+    },
+    {
+      "matchPackageNames": ["html2canvas", "file-saver", "downloadjs", "exceljs"],
+      "groupName": "file-saver"
     },
     {
       "matchPackageNames": ["cesium", "resium"],
@@ -46,7 +71,25 @@
       "groupName": "typescript"
     },
     {
-      "matchPackagePrefixes": ["jest", "@testing-library/", "eventsourcemock", "canvas", "mutation-observer"],
+      "matchPackagePrefixes": [
+        "jest",
+        "@testing-library/",
+        "eventsourcemock",
+        "canvas",
+        "mutation-observer",
+        "jscpd",
+        "StyleCop",
+        "NUnit",
+        "Moq",
+        "Castle.Core",
+        "mock-jwks",
+        "nock",
+        "wait-for-expect",
+        "ts-jest",
+        "license-checker",
+        "local-cors-proxy",
+        "source-map-explorer"
+      ],
       "groupName": "testing"
     },
     {
@@ -60,6 +103,46 @@
     {
       "matchPackageNames": ["husky", "lint-staged", "prettier"],
       "groupName": "prettier"
+    },
+    {
+      "matchPackageNames": ["jquery", "jquery-ui", "free-jqgrid"],
+      "groupName": "jquery"
+    },
+    {
+      "matchPackagePrefixes": ["Adenson.", "Pangaea."],
+      "groupName": "PangaeaCore"
+    },
+    {
+      "matchPackagePrefixes": ["Saltarelle.", "ScriptSharp."],
+      "groupName": "Saltarelle"
+    },
+    {
+      "matchPackagePrefixes": ["Nancy"],
+      "groupName": "Nancy"
+    },
+    {
+      "matchPackagePrefixes": ["Microsoft.", "MSBuild.", "System."],
+      "groupName": "Microsoft"
+    },
+    {
+      "matchPackageNames": ["jsonwebtoken", "jwks-rsa"],
+      "groupName": "jwks"
+    },
+    {
+      "matchPackagePrefixes": ["azure", "@azure"],
+      "groupName": "azure"
+    },
+    {
+      "matchPackagePrefixes": ["@fortawesome"],
+      "groupName": "fontawesome"
+    },
+    {
+      "matchPackagePrefixes": ["suneditor"],
+      "groupName": "suneditor"
+    },
+    {
+      "matchPackagePrefixes": ["typeconv", "openapi-types", "swagger-", "ts-json-schema-generator", "ajv-cli"],
+      "groupName": "openapi"
     }
   ]
 }
