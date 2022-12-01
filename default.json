@@ -94,7 +94,7 @@
     },
     {
       "matchPackagePrefixes": ["@craco/", "react-scripts", "craco", "env-cmd"],
-      "groupName": "craco"
+      "groupName": "react-scripts"
     },
     {
       "matchPackagePrefixes": ["electron"],
@@ -143,6 +143,14 @@
     {
       "matchPackagePrefixes": ["typeconv", "openapi-types", "swagger-", "ts-json-schema-generator", "ajv-cli"],
       "groupName": "openapi"
+    },
+    {
+      "matchUpdateTypes": ["pin", "pinDigest"],
+      "groupName": "Pin Dependencies"
+    },
+    {
+      "matchUpdateTypes": ["lockFileMaintenance"],
+      "groupName": "Lock File Maintenance"
     }
   ]
 }
