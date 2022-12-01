@@ -1,0 +1,65 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:base", "config:js-app"],
+  "branchConcurrentLimit": 0,
+  "prConcurrentLimit": 0,
+  "prHourlyLimit": 0,
+  "rebaseWhen": "conflicted",
+  "separateMajorMinor": true,
+  "separateMultipleMajor": true,
+  "updateInternalDeps": true,
+  "postUpdateOptions": ["yarnDedupeHighest"],
+  "packageRules": [
+    {
+      "matchDepTypes": ["dependencies", "bundledDependencies"],
+      "additionalBranchPrefix": "prod/",
+      "commitMessagePrefix": "[Production] "
+    },
+    {
+      "matchDepTypes": ["devDependencies"],
+      "additionalBranchPrefix": "dev/",
+      "commitMessagePrefix": "[Development] "
+    },
+    {
+      "matchDepTypes": ["peerDependencies", "optionalDependencies"],
+      "additionalBranchPrefix": "opt/",
+      "commitMessagePrefix": "[Optional] "
+    },
+    {
+      "matchPackagePrefixes": ["eslint-", "@typescript-eslint/"],
+      "groupName": "eslint"
+    },
+    {
+      "matchPackagePrefixes": ["mui", "@mui/", "@date-io/", "@emotion/", "luxon", "material-ui"],
+      "groupName": "material-ui"
+    },
+    {
+      "matchPackageNames": ["react", "react-dom", "react-color", "html-react-parser", "dompurify"],
+      "groupName": "react"
+    },
+    {
+      "matchPackageNames": ["cesium", "resium"],
+      "groupName": "resium"
+    },
+    {
+      "matchPackagePrefixes": ["typescript", "typedoc", "@types/"],
+      "groupName": "typescript"
+    },
+    {
+      "matchPackagePrefixes": ["jest", "@testing-library/", "eventsourcemock", "canvas", "mutation-observer"],
+      "groupName": "testing"
+    },
+    {
+      "matchPackagePrefixes": ["@craco/", "react-scripts", "craco", "env-cmd"],
+      "groupName": "craco"
+    },
+    {
+      "matchPackagePrefixes": ["electron"],
+      "groupName": "electron"
+    },
+    {
+      "matchPackageNames": ["husky", "lint-staged", "prettier"],
+      "groupName": "prettier"
+    }
+  ]
+}
