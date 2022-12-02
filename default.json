@@ -8,12 +8,13 @@
   "separateMajorMinor": true,
   "separateMultipleMajor": true,
   "updateInternalDeps": true,
-  "postUpdateOptions": ["yarnDedupeHighest"],
+  "postUpdateOptions": ["yarnDedupeHighest", "npmDedupe"],
   "packageRules": [
     {
       "matchDepTypes": ["dependencies", "bundledDependencies"],
       "additionalBranchPrefix": "prod/",
-      "commitMessagePrefix": "[Production] "
+      "commitMessagePrefix": "[Production] ",
+      "draftPR": true
     },
     {
       "matchDepTypes": ["devDependencies"],
