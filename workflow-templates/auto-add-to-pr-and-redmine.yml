@@ -32,7 +32,7 @@ jobs:
 
   extractnum:
     needs: pull-request
-    if: ${{ needs.pull-request.outputs.pr_url }}
+    if: ${{ needs.pull-request.outputs.pr_url && needs.pull-request.outputs.pr_created == "true" }}
     runs-on: ubuntu-latest
     outputs:
       issue: ${{ steps.extract.outputs.replaced }}
@@ -47,7 +47,7 @@ jobs:
 
   link-to-redmine:
     needs: [extractnum, pull-request]
-    if: ${{ needs.pull-request.outputs.pr_url && needs.extractnum.outputs.issue != github.ref_name && needs.pull-request.outputs.pr_created }}
+    if: ${{ needs.pull-request.outputs.pr_url && needs.pull-request.outputs.pr_created == "true" && needs.extractnum.outputs.issue != github.ref_name }}
     uses: pangaeatech/.github/.github/workflows/link-to-redmine.yml@main
     with:
       pr_num: ${{ needs.pull-request.outputs.pr_num }}
@@ -60,7 +60,7 @@ jobs:
 
   add-to-redmine:
     needs: [extractnum, pull-request]
-    if: ${{ needs.pull-request.outputs.pr_url && needs.extractnum.outputs.issue == github.ref_name }}
+    if: ${{ needs.pull-request.outputs.pr_url && needs.pull-request.outputs.pr_created == "true" && needs.extractnum.outputs.issue == github.ref_name }}
     uses: pangaeatech/.github/.github/workflows/add-to-redmine.yml@main
     with:
       pr_num: ${{ needs.pull-request.outputs.pr_num }}
