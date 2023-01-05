@@ -83,7 +83,7 @@ jobs:
         issue: ${{ steps.extract.outputs.replaced }}
       steps:
         - id: extract
-          uses: frabert/replace-string-action@v2.0
+          uses: frabert/replace-string-action@v2
           with:
             pattern: "^(task|issue|bug)(\\d+)-.*$"
             flags: "i"
