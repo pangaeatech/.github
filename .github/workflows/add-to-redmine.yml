@@ -23,6 +23,7 @@
 #       rm_tracker_id: 13
 #       rm_version_id: 10
 #       rm_field_id: 11
+#       draft_prefix: "DRAFT: "
 #     secrets:
 #       rm_key: ${{ secrets.REDMINE_API_KEY }}
 
@@ -66,6 +67,8 @@ on:
         # The redmine custom field ID to store the PR number in (optional)
         required: false
         type: number
+      draft_prefix:
+        # If the Pull Request has this prefix (case insensitive), then it will be set to Draft upon being added successfully to Redmine (optional - defaults to "WIP " if not specified).
     secrets:
       rm_key:
         # The REST API Key of the redmine user to post the issue as
@@ -112,3 +115,13 @@ jobs:
           RM_URL: ${{ inputs.rm_url }}
           RM_KEY: ${{ secrets.rm_key }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set PR to draft and update subject
+        if: startsWith(inputs.pr_subject, inputs.draft_prefix || "WIP ")
+        run: |
+          gh pr ready --undo
+          NEWSUBJ=$(echo "$SUBJECT" | sed -e "s/^$PREFIX//i")
+          gh pr edit --title "$NEWSUBJ"
+        env:
+          SUBJECT: "${{ inputs.pr_subject }}"
+          PREFIX: "${{ inputs.draft_prefix || 'WIP ' }}"

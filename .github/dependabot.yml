@@ -6,7 +6,7 @@ updates:
       interval: daily
       time: "11:00"
     commit-message:
-      prefix: "[Production]"
+      prefix: "WIP [Production]"
       prefix-development: "[Development]"
     rebase-strategy: "disabled"
   - package-ecosystem: "github-actions"
