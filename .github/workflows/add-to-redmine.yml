@@ -82,12 +82,13 @@ jobs:
       - name: Add task to redmine
         run: |
           sudo apt-get install -y jq curl pandoc
+          SUBJ=$(echo "$PR_SUBJECT" | sed -e "s/^$PREFIX//i")
           BODY=$(echo "Linked to [Pull Request $PR_NUM]($PR_URL)
 
              $PR_BODY" | pandoc -f gfm -t html | pandoc -f html -t textile | LC_ALL=UTF-8 sed -e 's/<tt>/<code>/g' -e 's/<\/tt>/<\/code>/g' -e 's/<hr *\/>/----/g' -e "s/[\xF0-\xF7].../�/g");
           jq --null-input \
              --arg key "$RM_KEY" \
-             --arg subj "$PR_SUBJECT" \
+             --arg subj "$SUBJ" \
              --arg desc "$BODY" \
              --arg proj "$RM_PROJECT_ID" \
              --arg trac "$RM_TRACKER_ID" \
@@ -114,14 +115,15 @@ jobs:
           RM_FIELD_ID: ${{ inputs.rm_field_id }}
           RM_URL: ${{ inputs.rm_url }}
           RM_KEY: ${{ secrets.rm_key }}
+          PREFIX: "${{ inputs.draft_prefix || 'WIP ' }}"
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set PR to draft and update subject
         if: startsWith(inputs.pr_subject, inputs.draft_prefix || "WIP ")
         run: |
           gh pr ready --undo
-          NEWSUBJ=$(echo "$SUBJECT" | sed -e "s/^$PREFIX//i")
-          gh pr edit --title "$NEWSUBJ"
+          SUBJ=$(echo "$SUBJECT" | sed -e "s/^$PREFIX//i")
+          gh pr edit --title "$SUBJ"
         env:
           SUBJECT: "${{ inputs.pr_subject }}"
           PREFIX: "${{ inputs.draft_prefix || 'WIP ' }}"
