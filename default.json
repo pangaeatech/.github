@@ -13,17 +13,17 @@
     {
       "matchDepTypes": ["dependencies", "bundledDependencies"],
       "additionalBranchPrefix": "prod/",
-      "commitMessagePrefix": "WIP [Production] "
+      "commitMessagePrefix": "WIP [Prod] "
     },
     {
       "matchDepTypes": ["devDependencies"],
       "additionalBranchPrefix": "dev/",
-      "commitMessagePrefix": "[Development] "
+      "commitMessagePrefix": "[Dev] "
     },
     {
       "matchDepTypes": ["peerDependencies", "optionalDependencies"],
       "additionalBranchPrefix": "opt/",
-      "commitMessagePrefix": "WIP [Optional] "
+      "commitMessagePrefix": "WIP [Opt] "
     },
     {
       "matchPackagePrefixes": ["eslint", "@typescript-eslint/"],
