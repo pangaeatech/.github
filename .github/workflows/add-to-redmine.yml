@@ -119,7 +119,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set PR to draft and update subject
-        if: startsWith(inputs.pr_subject, inputs.draft_prefix || "WIP ")
+        if: startsWith(inputs.pr_subject, inputs.draft_prefix || 'WIP ')
         run: |
           gh pr ready --undo
           SUBJ=$(echo "$SUBJECT" | sed -e "s/^$PREFIX//i")
