@@ -69,6 +69,8 @@ on:
         type: number
       draft_prefix:
         # If the Pull Request has this prefix (case insensitive), then it will be set to Draft upon being added successfully to Redmine (optional - defaults to "WIP " if not specified).
+        required: false
+        type: string
     secrets:
       rm_key:
         # The REST API Key of the redmine user to post the issue as
