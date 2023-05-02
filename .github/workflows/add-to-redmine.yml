@@ -123,10 +123,11 @@ jobs:
       - name: Set PR to draft and update subject
         if: startsWith(inputs.pr_subject, inputs.draft_prefix || 'WIP ')
         run: |
-          gh pr ready --undo
+          gh pr ready "$PR_URL" --undo
           SUBJ=$(echo "$SUBJECT" | sed -e "s/^$PREFIX//i")
-          gh pr edit --title "$SUBJ"
+          gh pr edit "$PR_URL" --title "$SUBJ"
         env:
+          PR_URL: ${{ inputs.pr_url }}
           SUBJECT: "${{ inputs.pr_subject }}"
           PREFIX: "${{ inputs.draft_prefix || 'WIP ' }}"
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
