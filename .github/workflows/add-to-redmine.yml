@@ -12,6 +12,7 @@
 #     permissions:
 #       contents: write
 #       pull-requests: write
+#       repository-projects: read
 #     uses: pangaeatech/.github/.github/workflows/add-to-redmine.yml@main
 #     with:
 #       pr_num: ${{github.event.pull_request.number}}
