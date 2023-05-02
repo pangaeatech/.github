@@ -10,7 +10,7 @@
 #   add-to-redmine:
 #     if: ${{ github.actor == 'dependabot[bot]' }}
 #     permissions:
-#       contents: read
+#       contents: write
 #       pull-requests: write
 #     uses: pangaeatech/.github/.github/workflows/add-to-redmine.yml@main
 #     with:
