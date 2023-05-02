@@ -13,7 +13,8 @@
     {
       "matchDepTypes": ["dependencies", "bundledDependencies"],
       "additionalBranchPrefix": "prod/",
-      "commitMessagePrefix": "WIP [Prod] "
+      "commitMessagePrefix": "[Prod] ",
+      "draftPR": true
     },
     {
       "matchDepTypes": ["devDependencies"],
@@ -23,7 +24,8 @@
     {
       "matchDepTypes": ["peerDependencies", "optionalDependencies"],
       "additionalBranchPrefix": "opt/",
-      "commitMessagePrefix": "WIP [Opt] "
+      "commitMessagePrefix": "[Opt] ",
+      "draftPR": true
     },
     {
       "matchPackagePrefixes": ["eslint", "@typescript-eslint/"],
