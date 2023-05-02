@@ -1,0 +1,28 @@
+name: Automatically Create PR on New Branches
+concurrency: auto-pr-${{ github.ref }}
+on:
+  push:
+    branches-ignore:
+      - "main"
+      - "dependabot/**"
+      - "renovate/**"
+      - "whitesource/**"
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  pull-request:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: repo-sync/pull-request@v2.12
+        id: open-pr
+        with:
+          pr_title: "${{ github.ref_name }}"
+          pr_label: "auto-pr"
+          pr_draft: true
+          pr_allow_empty: true
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          destination_branch: "main"
