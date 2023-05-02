@@ -29,8 +29,8 @@ jobs:
 
       - run: npm install
 
-      - run: npx format:check
+      - run: npm run format:check
 
-      - run: npx lint:actions
+      - run: npm run lint:actions
 
-      - run: npx lint:templates
+      - run: npm run lint:templates
