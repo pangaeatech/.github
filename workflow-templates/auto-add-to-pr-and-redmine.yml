@@ -10,8 +10,9 @@ on:
       # Add any other branches you want to ignore
 
 permissions:
-  contents: read
+  contents: write
   pull-requests: write
+  repository-projects: read
 
 jobs:
   pull-request:

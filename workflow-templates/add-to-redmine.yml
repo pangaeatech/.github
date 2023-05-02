@@ -4,8 +4,9 @@ on:
     types: [opened, reopened]
 
 permissions:
-  contents: read
+  contents: write
   pull-requests: write
+  repository-projects: read
 
 jobs:
   add-to-redmine:
