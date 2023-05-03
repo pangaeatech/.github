@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: repo-sync/pull-request@v2.11
+      - uses: repo-sync/pull-request@v2.12
         id: open-pr
         with:
           pr_title: "${{ github.ref_name }}"
