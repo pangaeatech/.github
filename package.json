@@ -6,12 +6,12 @@
   "repository": "github:pangaeatech/.github",
   "version": "0.1.0",
   "devDependencies": {
-    "@action-validator/cli": "^0.5.1",
-    "@action-validator/core": "^0.5.1",
-    "husky": "^8.0.3",
-    "lint-staged": "^13.2.2",
-    "prettier": "^2.8.8",
-    "run-for-every-file": "^1.1.0"
+    "@action-validator/cli": "0.5.1",
+    "@action-validator/core": "0.5.1",
+    "husky": "8.0.3",
+    "lint-staged": "13.2.2",
+    "prettier": "2.8.8",
+    "run-for-every-file": "1.1.0"
   },
   "scripts": {
     "format:check": "prettier --check .",
