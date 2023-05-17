@@ -92,6 +92,8 @@
         "local-cors-proxy",
         "source-map-explorer"
       ],
+      "additionalBranchPrefix": "dev/",
+      "commitMessagePrefix": "[Dev] ",
       "groupName": "testing"
     },
     {
@@ -112,19 +114,32 @@
     },
     {
       "matchPackagePrefixes": ["Adenson.", "Pangaea."],
+      "additionalBranchPrefix": "prod/",
+      "commitMessagePrefix": "[Prod] ",
       "groupName": "PangaeaCore"
     },
     {
       "matchPackagePrefixes": ["Saltarelle.", "ScriptSharp."],
+      "additionalBranchPrefix": "prod/",
+      "commitMessagePrefix": "[Prod] ",
       "groupName": "Saltarelle"
     },
     {
       "matchPackagePrefixes": ["Nancy"],
+      "additionalBranchPrefix": "prod/",
+      "commitMessagePrefix": "[Prod] ",
       "groupName": "Nancy"
     },
     {
       "matchPackagePrefixes": ["Microsoft.", "MSBuild.", "System."],
+      "additionalBranchPrefix": "prod/",
+      "commitMessagePrefix": "[Prod] ",
       "groupName": "Microsoft"
+    },
+    {
+      "matchPackagePrefixes": ["Newtonsoft.Json"],
+      "additionalBranchPrefix": "prod/",
+      "commitMessagePrefix": "[Prod] "
     },
     {
       "matchPackageNames": ["jsonwebtoken", "jwks-rsa"],
