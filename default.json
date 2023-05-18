@@ -11,7 +11,7 @@
   "postUpdateOptions": ["yarnDedupeHighest"],
   "packageRules": [
     {
-      "matchDepTypes": ["dependencies", "bundledDependencies"],
+      "matchDepTypes": ["dependencies", "bundledDependencies", "nuget"],
       "additionalBranchPrefix": "prod/",
       "commitMessagePrefix": "[Prod] ",
       "draftPR": true
@@ -26,6 +26,24 @@
       "additionalBranchPrefix": "opt/",
       "commitMessagePrefix": "[Opt] ",
       "draftPR": true
+    },
+    {
+      "matchPackagePrefixes": [
+        "jest",
+        "@testing-library/",
+        "eventsourcemock",
+        "canvas",
+        "mutation-observer",
+        "jscpd",
+        "mock-jwks",
+        "nock",
+        "wait-for-expect",
+        "ts-jest",
+        "license-checker",
+        "local-cors-proxy",
+        "source-map-explorer"
+      ],
+      "groupName": "testing"
     },
     {
       "matchPackagePrefixes": ["eslint", "@typescript-eslint/"],
@@ -73,30 +91,6 @@
       "groupName": "typescript"
     },
     {
-      "matchPackagePrefixes": [
-        "jest",
-        "@testing-library/",
-        "eventsourcemock",
-        "canvas",
-        "mutation-observer",
-        "jscpd",
-        "StyleCop",
-        "NUnit",
-        "Moq",
-        "Castle.Core",
-        "mock-jwks",
-        "nock",
-        "wait-for-expect",
-        "ts-jest",
-        "license-checker",
-        "local-cors-proxy",
-        "source-map-explorer"
-      ],
-      "additionalBranchPrefix": "dev/",
-      "commitMessagePrefix": "[Dev] ",
-      "groupName": "testing"
-    },
-    {
       "matchPackagePrefixes": ["@craco/", "react-scripts", "craco", "env-cmd"],
       "groupName": "react-scripts"
     },
@@ -114,32 +108,27 @@
     },
     {
       "matchPackagePrefixes": ["Adenson.", "Pangaea."],
-      "additionalBranchPrefix": "prod/",
-      "commitMessagePrefix": "[Prod] ",
       "groupName": "PangaeaCore"
     },
     {
       "matchPackagePrefixes": ["Saltarelle.", "ScriptSharp."],
-      "additionalBranchPrefix": "prod/",
-      "commitMessagePrefix": "[Prod] ",
       "groupName": "Saltarelle"
     },
     {
-      "matchPackagePrefixes": ["Nancy"],
-      "additionalBranchPrefix": "prod/",
-      "commitMessagePrefix": "[Prod] ",
+      "matchPackagePrefixes": ["Nancy", "AjaxMin", "Owin"],
       "groupName": "Nancy"
     },
     {
-      "matchPackagePrefixes": ["Microsoft.", "MSBuild.", "System."],
-      "additionalBranchPrefix": "prod/",
-      "commitMessagePrefix": "[Prod] ",
+      "matchPackagePrefixes": ["Microsoft.", "MSBuild.", "System.", "EntityFramework"],
       "groupName": "Microsoft"
     },
     {
-      "matchPackagePrefixes": ["Newtonsoft.Json"],
-      "additionalBranchPrefix": "prod/",
-      "commitMessagePrefix": "[Prod] "
+      "matchPackagePrefixes": ["HtmlSanitizer", "AngleSharp"],
+      "groupName": "HtmlSanitizer"
+    },
+    {
+      "matchPackagePrefixes": ["Aspose."],
+      "groupName": "Aspose"
     },
     {
       "matchPackageNames": ["jsonwebtoken", "jwks-rsa"],
@@ -160,6 +149,24 @@
     {
       "matchPackagePrefixes": ["typeconv", "openapi-types", "swagger-", "ts-json-schema-generator", "ajv-cli"],
       "groupName": "openapi"
+    },
+    {
+      "matchDepTypes": ["nuget"],
+      "matchPackagePrefixes": [
+        "CsQuery",
+        "StyleCop",
+        "Effort.EF6",
+        "NUnit",
+        "MSTest",
+        "Microsoft.CodeAnalysis",
+        "Moq",
+        "MSGReader",
+        "NMemory",
+        "Castle.Core"
+      ],
+      "additionalBranchPrefix": "dev/",
+      "commitMessagePrefix": "[Dev] ",
+      "groupName": "Testing"
     },
     {
       "matchUpdateTypes": ["pin", "pinDigest"],
