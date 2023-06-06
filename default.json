@@ -166,7 +166,8 @@
       ],
       "additionalBranchPrefix": "dev/",
       "commitMessagePrefix": "[Dev] ",
-      "groupName": "Testing"
+      "groupName": "Testing",
+      "draftPR": false
     },
     {
       "matchUpdateTypes": ["pin", "pinDigest"],
