@@ -17,7 +17,7 @@
       "draftPR": true
     },
     {
-      "matchDepTypes": ["devDependencies","development","test"],
+      "matchDepTypes": ["devDependencies", "development", "test"],
       "additionalBranchPrefix": "dev/",
       "commitMessagePrefix": "[Dev] "
     },
@@ -48,7 +48,7 @@
     {
       "matchDepTypes": ["test"],
       "groupName": "testing"
-    }.
+    },
     {
       "matchPackagePrefixes": ["eslint", "@typescript-eslint/"],
       "groupName": "eslint"
