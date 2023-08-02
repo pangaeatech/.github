@@ -17,7 +17,7 @@
       "draftPR": true
     },
     {
-      "matchDepTypes": ["devDependencies"],
+      "matchDepTypes": ["devDependencies", "development", "test"],
       "additionalBranchPrefix": "dev/",
       "commitMessagePrefix": "[Dev] "
     },
@@ -43,6 +43,10 @@
         "local-cors-proxy",
         "source-map-explorer"
       ],
+      "groupName": "testing"
+    },
+    {
+      "matchDepTypes": ["test"],
       "groupName": "testing"
     },
     {
