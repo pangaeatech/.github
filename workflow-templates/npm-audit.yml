@@ -18,7 +18,7 @@ jobs:
 
       - uses: actions/setup-node@v3
         with:
-          node-version: "14"
+          node-version: "16"
 
       - run: npm audit --production # OR: yarn audit --groups dependencies,optionalDependencies
         working-directory: ./ # Set to your working directory
