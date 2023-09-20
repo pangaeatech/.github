@@ -11,7 +11,7 @@
   "postUpdateOptions": ["yarnDedupeHighest"],
   "packageRules": [
     {
-      "matchDepTypes": ["dependencies", "bundledDependencies", "nuget"],
+      "matchDepTypes": ["dependencies", "bundledDependencies", "nuget", "regex"],
       "additionalBranchPrefix": "prod/",
       "commitMessagePrefix": "[Prod] ",
       "draftPR": true
@@ -155,7 +155,7 @@
       "groupName": "openapi"
     },
     {
-      "matchDepTypes": ["nuget"],
+      "matchDepTypes": ["nuget", "regex"],
       "matchPackagePrefixes": [
         "CsQuery",
         "StyleCop",
