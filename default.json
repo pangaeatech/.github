@@ -1,6 +1,7 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:base", "config:js-app"],
+  "extends": ["config:base", "config:js-app", "regexManagers:githubActionsVersions"],
+  "branchPrefix": "renovate/",
   "branchConcurrentLimit": 0,
   "prConcurrentLimit": 0,
   "prHourlyLimit": 0,
@@ -11,7 +12,13 @@
   "postUpdateOptions": ["yarnDedupeHighest"],
   "packageRules": [
     {
-      "matchDepTypes": ["dependencies", "bundledDependencies", "nuget", "regex"],
+      "matchDepTypes": ["dependencies", "bundledDependencies"],
+      "additionalBranchPrefix": "prod/",
+      "commitMessagePrefix": "[Prod] ",
+      "draftPR": true
+    },
+    {
+      "matchManagers": ["nuget", "regex"],
       "additionalBranchPrefix": "prod/",
       "commitMessagePrefix": "[Prod] ",
       "draftPR": true
@@ -155,7 +162,7 @@
       "groupName": "openapi"
     },
     {
-      "matchDepTypes": ["nuget", "regex"],
+      "matchManagers": ["nuget", "regex"],
       "matchPackagePrefixes": [
         "CsQuery",
         "StyleCop",
