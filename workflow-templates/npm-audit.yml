@@ -19,6 +19,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version-file: ".nvmrc"
+          cache: "npm"
 
       - run: npm audit --production # OR: yarn audit --groups dependencies,optionalDependencies
         working-directory: ./ # Set to your working directory
