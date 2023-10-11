@@ -39,10 +39,15 @@ jobs:
         uses: dependabot/fetch-metadata@v1.6.0
         with:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
+
       - name: Checkout source code
         uses: actions/checkout@v4
+
       - name: Setup Node
         uses: actions/setup-node@v3
+        with:
+          node-version-file: ".nvmrc"
+
       - name: Generate comment
         if: ${{ steps.metadata.outputs.package-ecosystem == 'npm_and_yarn' }}
         run: |
