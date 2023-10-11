@@ -7,7 +7,7 @@
   "version": "0.1.0",
   "devDependencies": {
     "@action-validator/cli": "0.5.1",
-    "@action-validator/core": "0.5.1",
+    "@action-validator/core": "0.5.3",
     "husky": "8.0.3",
     "lint-staged": "14.0.1",
     "prettier": "3.0.3",
