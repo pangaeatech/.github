@@ -30,11 +30,13 @@
     },
     {
       "matchManagers": ["poetry"],
+      "rangeStrategy": "replace",
       "additionalBranchPrefix": "build/",
       "commitMessagePrefix": "[Build] "
     },
     {
       "matchCategories": ["ci", "cd", "node"],
+      "rangeStrategy": "replace",
       "additionalBranchPrefix": "build/",
       "commitMessagePrefix": "[Build] "
     },
