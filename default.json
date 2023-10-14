@@ -29,6 +29,16 @@
       "commitMessagePrefix": "[Dev] "
     },
     {
+      "matchManagers": ["poetry"],
+      "additionalBranchPrefix": "build/",
+      "commitMessagePrefix": "[Build] "
+    },
+    {
+      "matchCategories": ["ci", "cd", "node"],
+      "additionalBranchPrefix": "build/",
+      "commitMessagePrefix": "[Build] "
+    },
+    {
       "matchDepTypes": ["peerDependencies", "optionalDependencies"],
       "additionalBranchPrefix": "opt/",
       "commitMessagePrefix": "[Opt] ",
