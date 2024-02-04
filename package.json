@@ -10,7 +10,7 @@
     "@action-validator/core": "0.5.4",
     "husky": "9.0.10",
     "lint-staged": "15.2.1",
-    "prettier": "3.2.4",
+    "prettier": "3.2.5",
     "run-for-every-file": "1.1.0"
   },
   "scripts": {
