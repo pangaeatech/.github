@@ -206,6 +206,8 @@
     },
     {
       "matchUpdateTypes": ["lockFileMaintenance"],
+      "additionalBranchPrefix": "dev/",
+      "commitMessagePrefix": "[Dev] ",
       "groupName": "Lock File Maintenance"
     }
   ]
