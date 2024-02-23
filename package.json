@@ -6,8 +6,8 @@
   "repository": "github:pangaeatech/.github",
   "version": "0.1.0",
   "devDependencies": {
-    "@action-validator/cli": "0.5.4",
-    "@action-validator/core": "0.5.4",
+    "@action-validator/cli": "0.6.0",
+    "@action-validator/core": "0.6.0",
     "husky": "9.0.11",
     "lint-staged": "15.2.2",
     "prettier": "3.2.5",
