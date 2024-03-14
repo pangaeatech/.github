@@ -209,6 +209,12 @@
       "additionalBranchPrefix": "dev/",
       "commitMessagePrefix": "[Dev] ",
       "groupName": "Lock File Maintenance"
+    },
+    {
+      "matchCategories": ["ci", "cd"],
+      "matchPackagePrefixes": ["Azure"],
+      "additionalBranchPrefix": "deploy/",
+      "commitMessagePrefix": "[Deploy] "
     }
   ]
 }
