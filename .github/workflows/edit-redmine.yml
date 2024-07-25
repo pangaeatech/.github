@@ -19,6 +19,7 @@
 #       rm_url: "https://redmine.mycompany.com/"
 #       rm_project_id: "testproject"
 #       rm_field_id: 11
+#       draft_prefix: "DRAFT: "
 #     secrets:
 #       rm_key: ${{ secrets.REDMINE_API_KEY }}
 
@@ -64,18 +65,22 @@ jobs:
       - name: Update task in Redmine
         run: |
           sudo apt-get install -y jq curl pandoc
+          SUBJ=$(echo "$PR_SUBJECT" | sed -e "s/^$PREFIX//i")
+          BODY=$(echo "Linked to [Pull Request $PR_NUM]($PR_URL)
 
-          BODY=$(echo "$DESC" | pandoc -f gfm -t html | pandoc -f html -t textile | LC_ALL=UTF-8 sed -e 's/<tt>/<code>/g' -e 's/<\/tt>/<\/code>/g' -e 's/<hr *\/>/----/g' -e "s/[\xF0-\xF7].../�/g");
+             $PR_BODY" | pandoc -f gfm -t html | pandoc -f html -t textile | LC_ALL=UTF-8 sed -e 's/<tt>/<code>/g' -e 's/<\/tt>/<\/code>/g' -e 's/<hr *\/>/----/g' -e "s/[\xF0-\xF7].../�/g");
+          jq --null-input --arg key "$RM_KEY" --arg subj "$SUBJ" --arg desc "$BODY" '{key:$key,issue:{subject:$subj,description:$desc}}' > body.json
           curl -s -X GET -H "X-Redmine-API-Key: ${RM_KEY}" "$RM_URL/issues.json?project_id=${RM_PROJ}&cf_${RM_FIELD_ID}=${PR_NUM}&status_id=*" > issues.txt
           for RM_ISSUE in $(cat issues.txt | jq '.issues[]?.id'); do
-          jq --null-input --arg key "$RM_KEY" --arg subj "$SUBJ" --arg desc "$BODY" '{key:$key,issue:{subject:$subj,description:$desc}}' > body.json
           curl -s -X PUT -H "Content-Type: application/json" -d "@body.json" "${RM_URL}/issues/${RM_ISSUE}.json"
           done;
         env:
           PR_NUM: ${{ inputs.pr_num }}
-          SUBJ: ${{ inputs.title }}
-          DESC: ${{ inputs.desc }}
+          PR_SUBJECT: ${{ inputs.title }}
+          PR_BODY: ${{ inputs.desc }}
           RM_PROJ: ${{ inputs.rm_project_id }}
           RM_FIELD_ID: ${{ inputs.rm_field_id }}
           RM_URL: ${{ inputs.rm_url }}
           RM_KEY: ${{ secrets.rm_key }}
+          PREFIX: "${{ inputs.draft_prefix || 'WIP ' }}"
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
