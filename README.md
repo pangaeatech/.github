@@ -149,6 +149,7 @@ on:
         types: [submitted]
 jobs:
     edit-redmine:
+        if: ${{ github.actor == 'dependabot[bot]' }}
         permissions:
             contents: read
         uses: pangaeatech/.github/.github/workflows/edit-redmine.yml@main
