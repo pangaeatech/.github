@@ -18,7 +18,7 @@ on:
         types: [opened, synchronize, reopened]
 jobs:
     annotate-npm-dependencies:
-        if: ${{ github.actor == 'dependabot[bot]' }}
+        if: ${{ github.event.pull_request.user.login == 'dependabot[bot]' }}
         permissions:
             contents: read
             pull-requests: write
@@ -46,7 +46,7 @@ on:
         types: [opened]
 jobs:
     add-to-redmine:
-        if: ${{ github.actor == 'dependabot[bot]' }}
+        if: ${{ github.event.pull_request.user.login == 'dependabot[bot]' }}
         permissions:
             contents: read
             pull-requests: write
@@ -129,6 +129,34 @@ jobs:
             cmt_user: ${{github.event.review.user.login}}
             cmt_body: ${{github.event.review.body}}
             cmt_action: ${{github.event.review.state}}
+            rm_url: "https://redmine.mycompany.com/"
+            rm_project_id: "testproject"
+            rm_field_id: 11
+        secrets:
+            rm_key: ${{ secrets.REDMINE_API_KEY }}
+```
+
+### 4. [Edit Redmine](.github/workflows/edit-redmine.yml)
+
+Changes the titles and descriptions of any issues in your [Redmine](https://redmine.org/) deployment which are linked to the specified pull request.
+
+#### Example Usage:
+
+```yaml
+name: My favorite workflow
+on:
+    pull_request_review:
+        types: [submitted]
+jobs:
+    edit-redmine:
+        if: ${{ github.event.pull_request.user.login == 'dependabot[bot]' }}
+        permissions:
+            contents: read
+        uses: pangaeatech/.github/.github/workflows/edit-redmine.yml@main
+        with:
+            pr_num: ${{github.event.pull_request.number}}
+            title: ${{github.event.pull_request.title}}
+            desc: ${{github.event.pull_request.body}}
             rm_url: "https://redmine.mycompany.com/"
             rm_project_id: "testproject"
             rm_field_id: 11
