@@ -14,8 +14,9 @@
 #     uses: pangaeatech/.github/.github/workflows/edit-redmine.yml@main
 #     with:
 #       pr_num: ${{github.event.pull_request.number}}
-#       title: ${{github.event.pull_request.title}}
-#       desc: ${{github.event.pull_request.body}}
+#       pr_url: ${{github.event.pull_request.html_url}}
+#       pr_subject: ${{github.event.pull_request.title}}
+#       pr_body: ${{github.event.pull_request.body}}
 #       rm_url: "https://redmine.mycompany.com/"
 #       rm_project_id: "testproject"
 #       rm_field_id: 11
@@ -31,6 +32,18 @@ on:
         # The Pull Request Number
         required: true
         type: string
+      pr_url:
+        # The Pull Request URL
+        required: true
+        type: string
+      pr_subject:
+        # The Pull Request Subject
+        required: true
+        type: string
+      pr_body:
+        # The Pull Request Description (optional)
+        required: false
+        type: string
       rm_url:
         # The Redmine URL
         required: true
@@ -44,13 +57,9 @@ on:
         # NOTE: This field must have "Used as a Filter" enabled in Redmine
         required: true
         type: number
-      title:
-        # The PR's title
-        required: true
-        type: string
-      desc:
-        # The PR's description
-        required: true
+      draft_prefix:
+        # If the Pull Request has this prefix (case insensitive), then it will be set to Draft upon being added successfully to Redmine (optional - defaults to "WIP " if not specified).
+        required: false
         type: string
     secrets:
       rm_key:
@@ -75,9 +84,10 @@ jobs:
           curl -s -X PUT -H "Content-Type: application/json" -d "@body.json" "${RM_URL}/issues/${RM_ISSUE}.json"
           done;
         env:
-          PR_NUM: ${{ inputs.pr_num }}
-          PR_SUBJECT: ${{ inputs.title }}
-          PR_BODY: ${{ inputs.desc }}
+          PR_URL: ${{ inputs.pr_url }}
+          PR_NUM: ${{ Inputs.pr_num }}
+          PR_SUBJECT: ${{ inputs.pr_subject }}
+          PR_BODY: ${{ inputs.pr_body }}
           RM_PROJ: ${{ inputs.rm_project_id }}
           RM_FIELD_ID: ${{ inputs.rm_field_id }}
           RM_URL: ${{ inputs.rm_url }}

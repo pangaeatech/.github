@@ -155,8 +155,9 @@ jobs:
         uses: pangaeatech/.github/.github/workflows/edit-redmine.yml@main
         with:
             pr_num: ${{github.event.pull_request.number}}
-            title: ${{github.event.pull_request.title}}
-            desc: ${{github.event.pull_request.body}}
+            pr_url: ${{github.event.pull_request.html_url}}
+            pr_subject: ${{github.event.pull_request.title}}
+            pr_body: ${{github.event.pull_request.body}}
             rm_url: "https://redmine.mycompany.com/"
             rm_project_id: "testproject"
             rm_field_id: 11
