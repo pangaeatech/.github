@@ -1,0 +1,80 @@
+# Updates the title and description of any issues in Redmine linked to the specified pull request.
+#
+# Example Usage:
+# --------------
+# name: My favorite workflow
+# on:
+#   pull_request:
+#     types: [edited]
+# jobs:
+#   edit-redmine:
+#     permissions:
+#       contents: read
+#     uses: pangaeatech/.github/.github/workflows/edit-redmine.yml@main
+#     with:
+#       pr_num: ${{github.event.pull_request.number}}
+#       title: ${{github.event.pull_request.title}}
+#       desc: ${{github.event.pull_request.body}}
+#       rm_url: "https://redmine.mycompany.com/"
+#       rm_project_id: "testproject"
+#       rm_field_id: 11
+#     secrets:
+#       rm_key: ${{ secrets.REDMINE_API_KEY }}
+
+name: Update Redmine
+on:
+  workflow_call:
+    inputs:
+      pr_num:
+        # The Pull Request Number
+        required: true
+        type: string
+      rm_url:
+        # The Redmine URL
+        required: true
+        type: string
+      rm_project_id:
+        # The Project's unique id
+        required: true
+        type: string
+      rm_field_id:
+        # The redmine custom field ID which stores the PR number
+        # NOTE: This field must have "Used as a Filter" enabled in Redmine
+        required: true
+        type: number
+      title:
+        # The PR's title
+        required: true
+        type: string
+      desc:
+        # The PR's description
+        required: true
+        type: string
+    secrets:
+      rm_key:
+        # The REST API Key of the redmine user to post as
+        # NOTE: This user MUST have permission to "Add notes" on the
+        #       project specified by rm_project_id
+        required: true
+jobs:
+  annotate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update task in Redmine
+        run: |
+          sudo apt-get install -y jq curl pandoc
+
+          BODY=$(echo "$DESC" | pandoc -f gfm -t html | pandoc -f html -t textile | LC_ALL=UTF-8 sed -e 's/<tt>/<code>/g' -e 's/<\/tt>/<\/code>/g' -e 's/<hr *\/>/----/g' -e "s/[\xF0-\xF7].../�/g");
+          curl -s -X GET -H "X-Redmine-API-Key: ${RM_KEY}" "$RM_URL/issues.json?project_id=${RM_PROJ}&cf_${RM_FIELD_ID}=${PR_NUM}&status_id=*" > issues.txt
+          for RM_ISSUE in $(cat issues.txt | jq '.issues[]?.id'); do
+          jq --null-input --arg key "$RM_KEY" --arg subj "$SUBJ" --arg desc "$BODY" '{key:$key,issue:{subject:$subj,description:$desc}}' > body.json
+          curl -s -X PUT -H "Content-Type: application/json" -d "@body.json" "${RM_URL}/issues/${RM_ISSUE}.json"
+          done;
+        env:
+          PR_NUM: ${{ inputs.pr_num }}
+          SUBJ: ${{ inputs.title }}
+          DESC: ${{ inputs.desc }}
+          RM_PROJ: ${{ inputs.rm_project_id }}
+          RM_FIELD_ID: ${{ inputs.rm_field_id }}
+          RM_URL: ${{ inputs.rm_url }}
+          RM_KEY: ${{ secrets.rm_key }}

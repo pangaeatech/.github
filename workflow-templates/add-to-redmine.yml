@@ -1,4 +1,4 @@
-name: Add dependabot PRs to Redmine
+name: Add dependabot/mend PRs to Redmine
 on:
   pull_request:
     types: [opened, reopened]
@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   add-to-redmine:
-    if: ${{ github.event.pull_request.user.login == 'dependabot[bot]' }}
+    if: ${{ github.event.pull_request.user.login == 'dependabot[bot]' || github.event.pull_request.user.login == 'renovate[bot]' || github.event.pull_request.user.login == 'mend-bolt-for-github[bot]' }}
     uses: pangaeatech/.github/.github/workflows/add-to-redmine.yml@main
     with:
       pr_num: ${{github.event.pull_request.number}}
