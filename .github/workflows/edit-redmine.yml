@@ -8,7 +8,7 @@
 #     types: [edited]
 # jobs:
 #   edit-redmine:
-#     if: ${{ github.actor == 'dependabot[bot]' }}
+#     if: ${{ github.event.pull_request.user.login == 'dependabot[bot]' }}
 #     permissions:
 #       contents: read
 #     uses: pangaeatech/.github/.github/workflows/edit-redmine.yml@main

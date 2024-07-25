@@ -18,7 +18,7 @@ on:
         types: [opened, synchronize, reopened]
 jobs:
     annotate-npm-dependencies:
-        if: ${{ github.actor == 'dependabot[bot]' }}
+        if: ${{ github.event.pull_request.user.login == 'dependabot[bot]' }}
         permissions:
             contents: read
             pull-requests: write
@@ -46,7 +46,7 @@ on:
         types: [opened]
 jobs:
     add-to-redmine:
-        if: ${{ github.actor == 'dependabot[bot]' }}
+        if: ${{ github.event.pull_request.user.login == 'dependabot[bot]' }}
         permissions:
             contents: read
             pull-requests: write
@@ -149,7 +149,7 @@ on:
         types: [submitted]
 jobs:
     edit-redmine:
-        if: ${{ github.actor == 'dependabot[bot]' }}
+        if: ${{ github.event.pull_request.user.login == 'dependabot[bot]' }}
         permissions:
             contents: read
         uses: pangaeatech/.github/.github/workflows/edit-redmine.yml@main
