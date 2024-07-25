@@ -153,7 +153,7 @@
       "groupName": "Microsoft"
     },
     {
-      "matchPackagePrefixes": ["HtmlSanitizer", "AngleSharp"],
+      "matchPackagePrefixes": ["mganss", "HtmlSanitizer", "AngleSharp"],
       "groupName": "HtmlSanitizer"
     },
     {

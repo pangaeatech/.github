@@ -22,8 +22,8 @@ jobs:
       pr_num: ${{ steps.open-pr.outputs.pr_number }}
       pr_created: ${{ steps.open-pr.outputs.pr_created }}
     steps:
-      - uses: actions/checkout@v3
-      - uses: repo-sync/pull-request@v2
+      - uses: actions/checkout@v4
+      - uses: repo-sync/pull-request@v2.12
         id: open-pr
         with:
           pr_title: "${{ github.ref_name }}"
@@ -41,7 +41,7 @@ jobs:
       issue: ${{ steps.extract.outputs.replaced }}
     steps:
       - id: extract
-        uses: frabert/replace-string-action@v2
+        uses: frabert/replace-string-action@v2.5
         with:
           pattern: "^(task|issue|bug)(\\d+)-.*$"
           flags: "i"
