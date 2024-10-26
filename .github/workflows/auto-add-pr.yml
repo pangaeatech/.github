@@ -15,9 +15,6 @@ permissions:
   statuses: read
   repository-projects: read
 
-  # shouldn't need more...
-  actions: read
-
 jobs:
   pull-request:
     runs-on: ubuntu-latest
