@@ -26,7 +26,7 @@ jobs:
       - id: open-pr
         run: |
           gh pr view && echo "pr_created=false" >> $GITHUB_OUTPUT || {
-            gh pr create -d -B $default-branch -l "auto-pr" -t "${{ github.ref_name }}" -b ""
+            gh pr create -d -B $default-branch -t "${{ github.ref_name }}" -b ""
             echo "pr_number=$(gh pr view --json number -q .number || echo "")" >> $GITHUB_OUTPUT
             echo "pr_url=$(gh pr view --json url -q .url || echo "")" >> $GITHUB_OUTPUT
             echo "pr_created=true" >> $GITHUB_OUTPUT
