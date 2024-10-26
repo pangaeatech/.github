@@ -14,16 +14,11 @@ permissions:
 
   # shouldn't need more...
   actions: read
-  attestations: read
   checks: read
   deployments: read
-  id-token: write
   issues: read
-  discussions: read
-  packages: read
   pages: read
   repository-projects: read
-  security-events: read
   statuses: read
 
 jobs:
