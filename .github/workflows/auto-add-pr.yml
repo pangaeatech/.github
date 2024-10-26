@@ -11,6 +11,7 @@ on:
 permissions:
   contents: read
   pull-requests: write
+
   # shouldn't need more...
   actions: read
   attestations: read
