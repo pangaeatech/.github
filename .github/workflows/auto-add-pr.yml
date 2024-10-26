@@ -17,7 +17,6 @@ permissions:
 
   # shouldn't need more...
   actions: read
-  deployments: read
 
 jobs:
   pull-request:
