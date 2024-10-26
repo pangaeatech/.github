@@ -11,15 +11,13 @@ on:
 permissions:
   contents: read
   pull-requests: write
+  checks: read
+  statuses: read
+  repository-projects: read
 
   # shouldn't need more...
   actions: read
-  checks: read
   deployments: read
-  issues: read
-  pages: read
-  repository-projects: read
-  statuses: read
 
 jobs:
   pull-request:
