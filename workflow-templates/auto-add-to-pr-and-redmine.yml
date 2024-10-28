@@ -13,6 +13,9 @@ permissions:
   contents: write
   pull-requests: write
   repository-projects: read
+  actions: read
+  statuses: read
+  checks: read
 
 jobs:
   pull-request:
