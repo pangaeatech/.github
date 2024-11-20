@@ -26,6 +26,7 @@
     },
     {
       "matchDepTypes": ["devDependencies", "development", "test"],
+      "rangeStrategy": "replace",
       "additionalBranchPrefix": "dev/",
       "commitMessagePrefix": "[Dev] "
     },
@@ -49,6 +50,7 @@
     },
     {
       "matchDepTypes": ["peerDependencies", "optionalDependencies"],
+      "rangeStrategy": "replace",
       "additionalBranchPrefix": "opt/",
       "commitMessagePrefix": "[Opt] ",
       "draftPR": true
@@ -195,6 +197,7 @@
         "NMemory",
         "Castle.Core"
       ],
+      "rangeStrategy": "replace",
       "additionalBranchPrefix": "dev/",
       "commitMessagePrefix": "[Dev] ",
       "groupName": "Testing",
@@ -213,6 +216,7 @@
     {
       "matchCategories": ["ci", "cd"],
       "matchPackagePrefixes": ["Azure"],
+      "rangeStrategy": "replace",
       "additionalBranchPrefix": "deploy/",
       "commitMessagePrefix": "[Deploy] "
     }
