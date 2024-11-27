@@ -6,12 +6,12 @@
 
 We are a Chicago-based business specializing in:
 
--   Custom Enterprise Information Technology Applications
--   Artificial Intelligence / Decision Support Systems
--   Geospatial Information Systems
--   Remote Sensing
--   Military Resource Management
--   Public Health and Homeland Security
--   Value Stream Transformation (VST) / Lean Management / Process Improvement
+- Custom Enterprise Information Technology Applications
+- Artificial Intelligence / Decision Support Systems
+- Geospatial Information Systems
+- Remote Sensing
+- Military Resource Management
+- Public Health and Homeland Security
+- Value Stream Transformation (VST) / Lean Management / Process Improvement
 
 #### Learn more at https://pangaeatech.com
