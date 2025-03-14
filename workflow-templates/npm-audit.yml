@@ -21,5 +21,5 @@ jobs:
           node-version-file: ".nvmrc"
           cache: "npm"
 
-      - run: npm audit --production # OR: yarn audit --groups dependencies,optionalDependencies
+      - run: npm audit --omit=dev # OR: yarn audit --groups dependencies,optionalDependencies
         working-directory: ./ # Set to your working directory
