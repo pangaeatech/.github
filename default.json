@@ -1,6 +1,6 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:base", "config:js-app", "regexManagers:githubActionsVersions"],
+  "extends": ["config:base", "config:js-app"],
   "branchPrefix": "renovate/",
   "branchConcurrentLimit": 0,
   "lockFileMaintenance": { "enabled": true },
@@ -220,5 +220,21 @@
       "additionalBranchPrefix": "deploy/",
       "commitMessagePrefix": "[Deploy] "
     }
+  ],
+  {
+  "customManagers": [
+    {
+      "customType": "regex",
+      "fileMatch": [
+        "(^|/)(workflow-templates|\\.(?:github|gitea|forgejo|gitlab)/(?:workflows|actions|ci))/.+\\.ya?ml$",
+        "(^|/)action\\.ya?ml$",
+        "(^|/)ci\\.ya?ml$",
+        "\\.gitlab-ci\\.ya?ml$"
+      ],
+      "matchStrings": [
+        "# renovate: datasource=(?<datasource>[a-zA-Z0-9-._]+?) depName=(?<depName>[^\\s]+?)(?: (?:lookupName|packageName)=(?<packageName>[^\\s]+?))?(?: versioning=(?<versioning>[^\\s]+?))?(?: extractVersion=(?<extractVersion>[^\\s]+?))?\\s+[A-Za-z0-9_]+?_VERSION\\s*:\\s*[\"']?(?<currentValue>.+?)[\"']?\\s"
+      ]
+    }
   ]
+  }
 }
