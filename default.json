@@ -1,7 +1,9 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:base", "config:js-app"],
+  "baseBranches": ["main"],
   "branchPrefix": "renovate/",
+  "dependencyDashboard": true,
   "branchConcurrentLimit": 0,
   "lockFileMaintenance": { "enabled": true },
   "prConcurrentLimit": 0,
@@ -88,6 +90,10 @@
     {
       "matchPackagePrefixes": ["antd", "@ant-design/", "moment-timezone"],
       "groupName": "antd"
+    },
+    {
+      "matchPackagePrefixes": ["@action-validator/"],
+      "groupName": "action-validator"
     },
     {
       "matchPackageNames": [
