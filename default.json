@@ -4,6 +4,7 @@
   "baseBranches": ["main"],
   "branchPrefix": "renovate/",
   "dependencyDashboard": true,
+  "enabledManagers": ["regex", "npm"],
   "branchConcurrentLimit": 0,
   "lockFileMaintenance": { "enabled": true },
   "prConcurrentLimit": 0,
@@ -227,7 +228,6 @@
       "commitMessagePrefix": "[Deploy] "
     }
   ],
-  {
   "customManagers": [
     {
       "customType": "regex",
@@ -242,5 +242,4 @@
       ]
     }
   ]
-  }
 }
