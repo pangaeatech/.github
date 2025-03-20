@@ -1,7 +1,10 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:base", "config:js-app", "regexManagers:githubActionsVersions"],
+  "extends": ["config:base", "config:js-app"],
+  "baseBranches": ["main"],
   "branchPrefix": "renovate/",
+  "dependencyDashboard": true,
+  "enabledManagers": ["regex", "npm"],
   "branchConcurrentLimit": 0,
   "lockFileMaintenance": { "enabled": true },
   "prConcurrentLimit": 0,
@@ -88,6 +91,10 @@
     {
       "matchPackagePrefixes": ["antd", "@ant-design/", "moment-timezone"],
       "groupName": "antd"
+    },
+    {
+      "matchPackagePrefixes": ["@action-validator/"],
+      "groupName": "action-validator"
     },
     {
       "matchPackageNames": [
@@ -219,6 +226,20 @@
       "rangeStrategy": "replace",
       "additionalBranchPrefix": "deploy/",
       "commitMessagePrefix": "[Deploy] "
+    }
+  ],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "fileMatch": [
+        "(^|/)(workflow-templates|\\.(?:github|gitea|forgejo|gitlab)/(?:workflows|actions|ci))/.+\\.ya?ml$",
+        "(^|/)action\\.ya?ml$",
+        "(^|/)ci\\.ya?ml$",
+        "\\.gitlab-ci\\.ya?ml$"
+      ],
+      "matchStrings": [
+        "# renovate: datasource=(?<datasource>[a-zA-Z0-9-._]+?) depName=(?<depName>[^\\s]+?)(?: (?:lookupName|packageName)=(?<packageName>[^\\s]+?))?(?: versioning=(?<versioning>[^\\s]+?))?(?: extractVersion=(?<extractVersion>[^\\s]+?))?\\s+[A-Za-z0-9_]+?_VERSION\\s*:\\s*[\"']?(?<currentValue>.+?)[\"']?\\s"
+      ]
     }
   ]
 }
