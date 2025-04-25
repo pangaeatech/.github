@@ -226,6 +226,10 @@
       "rangeStrategy": "replace",
       "additionalBranchPrefix": "deploy/",
       "commitMessagePrefix": "[Deploy] "
+    },
+    {
+      "matchDatasources": ["nuget"],
+      "registryUrls": ["https://api.nuget.org/v3/index.json", "https://community.chocolatey.org/api/v2/"]
     }
   ],
   "customManagers": [
