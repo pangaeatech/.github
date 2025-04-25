@@ -4,7 +4,7 @@
   "baseBranches": ["main"],
   "branchPrefix": "renovate/",
   "dependencyDashboard": true,
-  "enabledManagers": ["regex", "npm"],
+  "enabledManagers": ["regex", "custom.regex", "npm"],
   "branchConcurrentLimit": 0,
   "lockFileMaintenance": { "enabled": true },
   "prConcurrentLimit": 0,
@@ -22,9 +22,10 @@
       "draftPR": true
     },
     {
-      "matchManagers": ["nuget", "regex"],
+      "matchManagers": ["nuget", "regex", "custom.regex"],
       "additionalBranchPrefix": "prod/",
       "commitMessagePrefix": "[Prod] ",
+      "rangeStrategy": "replace",
       "draftPR": true
     },
     {
@@ -190,7 +191,7 @@
       "groupName": "openapi"
     },
     {
-      "matchManagers": ["nuget", "regex"],
+      "matchManagers": ["nuget", "regex", "custom.regex"],
       "matchPackagePrefixes": [
         "CsQuery",
         "StyleCop",
@@ -204,7 +205,6 @@
         "NMemory",
         "Castle.Core"
       ],
-      "rangeStrategy": "replace",
       "additionalBranchPrefix": "dev/",
       "commitMessagePrefix": "[Dev] ",
       "groupName": "Testing",
