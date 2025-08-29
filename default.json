@@ -197,6 +197,7 @@
         "StyleCop",
         "Effort.EF6",
         "NUnit",
+        "JustMock",
         "coverlet",
         "AltCover",
         "MSTest",
