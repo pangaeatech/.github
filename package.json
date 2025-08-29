@@ -5,15 +5,19 @@
   "private": "true",
   "repository": "github:pangaeatech/.github",
   "version": "0.1.0",
-  "dependencies": {},
   "devDependencies": {
-    "husky": "^8.0.2",
-    "lint-staged": "^13.0.4",
-    "prettier": "^2.8.0"
+    "@action-validator/cli": "0.6.0",
+    "@action-validator/core": "0.6.0",
+    "husky": "9.1",
+    "lint-staged": "16.1",
+    "prettier": "3.6",
+    "run-for-every-file": "1.1"
   },
   "scripts": {
     "format:check": "prettier --check .",
     "format:fix": "prettier --write .",
-    "prepare": "husky install .husky"
+    "prepare": "husky install .husky",
+    "lint:actions": "run-for-every-file --src ./.github/workflows/ --file '**/*.yml' --run 'npx action-validator {{src-file}}'",
+    "lint:templates": "run-for-every-file --src ./workflow-templates/ --file '**/*.yml' --run 'npx action-validator {{src-file}}'"
   }
 }

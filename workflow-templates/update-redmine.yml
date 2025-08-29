@@ -7,7 +7,7 @@ on:
   pull_request_review:
     types: [submitted]
   pull_request:
-    types: [closed, reopened, converted_to_draft, ready_for_review, review_requested]
+    types: [closed, reopened, converted_to_draft, ready_for_review, review_requested, edited]
 
 permissions:
   contents: read
@@ -59,7 +59,7 @@ jobs:
       rm_key: ${{ secrets.REDMINE_API_KEY }}
 
   add-status:
-    if: ${{ github.event_name == 'pull_request' && (github.event.action != 'closed' || !github.event.pull_request.merged) }}
+    if: ${{ github.event_name == 'pull_request' && (github.event.action != 'closed' || !github.event.pull_request.merged) && github.event.action != 'edited' }}
     uses: pangaeatech/.github/.github/workflows/update-redmine.yml@main
     with:
       pr_num: ${{github.event.pull_request.number}}
@@ -80,6 +80,20 @@ jobs:
       cmt_url: ${{github.event.pull_request.html_url}}
       cmt_user: ${{github.event.sender.login}}
       cmt_action: "Set the PR to: **merged**"
+      rm_url: "https://redmine.mycompany.com/" # Set to your URL
+      rm_project_id: "projectid" # Set to your project id
+      rm_field_id: 11 # Set to your field id
+    secrets:
+      rm_key: ${{ secrets.REDMINE_API_KEY }}
+
+  update-issue:
+    if: ${{ github.event_name == 'pull_request' && github.event.action == 'edited' && (github.event.pull_request.user.login == 'dependabot[bot]' || github.event.pull_request.user.login == 'renovate[bot]' || github.event.pull_request.user.login == 'mend-bolt-for-github[bot]') }}
+    uses: pangaeatech/.github/.github/workflows/edit-redmine.yml@main
+    with:
+      pr_num: ${{github.event.pull_request.number}}
+      pr_url: ${{github.event.pull_request.html_url}}
+      pr_subject: ${{github.event.pull_request.title}}
+      pr_body: ${{github.event.pull_request.body}}
       rm_url: "https://redmine.mycompany.com/" # Set to your URL
       rm_project_id: "projectid" # Set to your project id
       rm_field_id: 11 # Set to your field id

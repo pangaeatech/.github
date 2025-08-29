@@ -8,10 +8,11 @@
 #     types: [opened]
 # jobs:
 #   add-to-redmine:
-#     if: ${{ github.actor == 'dependabot[bot]' }}
+#     if: ${{ github.event.pull_request.user.login == 'dependabot[bot]' }}
 #     permissions:
-#       contents: read
+#       contents: write
 #       pull-requests: write
+#       repository-projects: read
 #     uses: pangaeatech/.github/.github/workflows/add-to-redmine.yml@main
 #     with:
 #       pr_num: ${{github.event.pull_request.number}}
@@ -23,6 +24,7 @@
 #       rm_tracker_id: 13
 #       rm_version_id: 10
 #       rm_field_id: 11
+#       draft_prefix: "DRAFT: "
 #     secrets:
 #       rm_key: ${{ secrets.REDMINE_API_KEY }}
 
@@ -66,6 +68,10 @@ on:
         # The redmine custom field ID to store the PR number in (optional)
         required: false
         type: number
+      draft_prefix:
+        # If the Pull Request has this prefix (case insensitive), then it will be set to Draft upon being added successfully to Redmine (optional - defaults to "WIP " if not specified).
+        required: false
+        type: string
     secrets:
       rm_key:
         # The REST API Key of the redmine user to post the issue as
@@ -79,12 +85,13 @@ jobs:
       - name: Add task to redmine
         run: |
           sudo apt-get install -y jq curl pandoc
+          SUBJ=$(echo "$PR_SUBJECT" | sed -e "s/^$PREFIX//i")
           BODY=$(echo "Linked to [Pull Request $PR_NUM]($PR_URL)
 
              $PR_BODY" | pandoc -f gfm -t html | pandoc -f html -t textile | LC_ALL=UTF-8 sed -e 's/<tt>/<code>/g' -e 's/<\/tt>/<\/code>/g' -e 's/<hr *\/>/----/g' -e "s/[\xF0-\xF7].../�/g");
           jq --null-input \
              --arg key "$RM_KEY" \
-             --arg subj "$PR_SUBJECT" \
+             --arg subj "$SUBJ" \
              --arg desc "$BODY" \
              --arg proj "$RM_PROJECT_ID" \
              --arg trac "$RM_TRACKER_ID" \
@@ -111,4 +118,17 @@ jobs:
           RM_FIELD_ID: ${{ inputs.rm_field_id }}
           RM_URL: ${{ inputs.rm_url }}
           RM_KEY: ${{ secrets.rm_key }}
+          PREFIX: "${{ inputs.draft_prefix || 'WIP ' }}"
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set PR to draft and update subject
+        if: startsWith(inputs.pr_subject, inputs.draft_prefix || 'WIP ')
+        run: |
+          gh pr ready "$PR_URL" --undo
+          SUBJ=$(echo "$SUBJECT" | sed -e "s/^$PREFIX//i")
+          gh pr edit "$PR_URL" --title "$SUBJ"
+        env:
+          PR_URL: ${{ inputs.pr_url }}
+          SUBJECT: "${{ inputs.pr_subject }}"
+          PREFIX: "${{ inputs.draft_prefix || 'WIP ' }}"
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

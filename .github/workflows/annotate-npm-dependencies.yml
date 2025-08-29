@@ -9,7 +9,7 @@
 #     types: [opened, synchronize, reopened]
 # jobs:
 #   annotate-npm-dependencies:
-#     if: ${{ github.actor == 'dependabot[bot]' }}
+#     if: ${{ github.event.pull_request.user.login == 'dependabot[bot]' }}
 #     permissions:
 #       contents: read
 #       pull-requests: write
@@ -36,13 +36,19 @@ jobs:
     steps:
       - name: Retrieve dependabot metadata
         id: metadata
-        uses: dependabot/fetch-metadata@v1.3.5
+        uses: dependabot/fetch-metadata@v2.4.0
         with:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
+
       - name: Checkout source code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v5
+
       - name: Setup Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+          cache: "npm"
+
       - name: Generate comment
         if: ${{ steps.metadata.outputs.package-ecosystem == 'npm_and_yarn' }}
         run: |

@@ -1,25 +1,26 @@
-# Updates any issues in Redmine linked to the specified pull request.
+# Updates the title and description of any issues in Redmine linked to the specified pull request.
 #
 # Example Usage:
 # --------------
 # name: My favorite workflow
 # on:
-#   pull_request_review:
-#     types: [submitted]
+#   pull_request:
+#     types: [edited]
 # jobs:
-#   update-redmine:
+#   edit-redmine:
+#     if: ${{ github.event.pull_request.user.login == 'dependabot[bot]' }}
 #     permissions:
 #       contents: read
-#     uses: pangaeatech/.github/.github/workflows/update-redmine.yml@main
+#     uses: pangaeatech/.github/.github/workflows/edit-redmine.yml@main
 #     with:
 #       pr_num: ${{github.event.pull_request.number}}
-#       cmt_url: ${{github.event.review.html_url}}
-#       cmt_user: ${{github.event.review.user.login}}
-#       cmt_body: ${{github.event.review.body}}
-#       cmt_action: ${{github.event.review.state}}
+#       pr_url: ${{github.event.pull_request.html_url}}
+#       pr_subject: ${{github.event.pull_request.title}}
+#       pr_body: ${{github.event.pull_request.body}}
 #       rm_url: "https://redmine.mycompany.com/"
 #       rm_project_id: "testproject"
 #       rm_field_id: 11
+#       draft_prefix: "DRAFT: "
 #     secrets:
 #       rm_key: ${{ secrets.REDMINE_API_KEY }}
 
@@ -30,6 +31,18 @@ on:
       pr_num:
         # The Pull Request Number
         required: true
+        type: string
+      pr_url:
+        # The Pull Request URL
+        required: true
+        type: string
+      pr_subject:
+        # The Pull Request Subject
+        required: true
+        type: string
+      pr_body:
+        # The Pull Request Description (optional)
+        required: false
         type: string
       rm_url:
         # The Redmine URL
@@ -44,21 +57,8 @@ on:
         # NOTE: This field must have "Used as a Filter" enabled in Redmine
         required: true
         type: number
-      cmt_url:
-        # The Comment's URL
-        required: true
-        type: string
-      cmt_user:
-        # The user who added the comment
-        required: true
-        type: string
-      cmt_body:
-        # The Comment's Body
-        required: false
-        type: string
-      cmt_action:
-        # The Comment's action ("approved", "commented", "merged", etc - supports markdown)
-        # Defaults to "commented" if not specified
+      draft_prefix:
+        # If the Pull Request has this prefix (case insensitive), then it will be set to Draft upon being added successfully to Redmine (optional - defaults to "WIP " if not specified).
         required: false
         type: string
     secrets:
@@ -74,21 +74,23 @@ jobs:
       - name: Update task in Redmine
         run: |
           sudo apt-get install -y jq curl pandoc
-          BODY=$(echo "[$CMT_USER $CMT_ACT]($CMT_URL)
+          SUBJ=$(echo "$PR_SUBJECT" | sed -e "s/^$PREFIX//i")
+          BODY=$(echo "Linked to [Pull Request $PR_NUM]($PR_URL)
 
-             $CMT_BODY" | pandoc -f gfm -t html | pandoc -f html -t textile | LC_ALL=UTF-8 sed -e 's/<tt>/<code>/g' -e 's/<\/tt>/<\/code>/g' -e 's/<hr *\/>/----/g' -e "s/[\xF0-\xF7].../�/g");
+             $PR_BODY" | pandoc -f gfm -t html | pandoc -f html -t textile | LC_ALL=UTF-8 sed -e 's/<tt>/<code>/g' -e 's/<\/tt>/<\/code>/g' -e 's/<hr *\/>/----/g' -e "s/[\xF0-\xF7].../�/g");
+          jq --null-input --arg key "$RM_KEY" --arg subj "$SUBJ" --arg desc "$BODY" '{key:$key,issue:{subject:$subj,description:$desc}}' > body.json
           curl -s -X GET -H "X-Redmine-API-Key: ${RM_KEY}" "$RM_URL/issues.json?project_id=${RM_PROJ}&cf_${RM_FIELD_ID}=${PR_NUM}&status_id=*" > issues.txt
-          jq --null-input --arg key "$RM_KEY" --arg body "$BODY" '{key:$key,issue:{notes:$body}}' > body.json
           for RM_ISSUE in $(cat issues.txt | jq '.issues[]?.id'); do
           curl -s -X PUT -H "Content-Type: application/json" -d "@body.json" "${RM_URL}/issues/${RM_ISSUE}.json"
           done;
         env:
-          PR_NUM: ${{ inputs.pr_num }}
-          CMT_URL: ${{ inputs.cmt_url }}
-          CMT_USER: ${{ inputs.cmt_user }}
-          CMT_BODY: ${{ inputs.cmt_body }}
-          CMT_ACT: ${{ inputs.cmt_action || 'commented' }}
+          PR_URL: ${{ inputs.pr_url }}
+          PR_NUM: ${{ Inputs.pr_num }}
+          PR_SUBJECT: ${{ inputs.pr_subject }}
+          PR_BODY: ${{ inputs.pr_body }}
           RM_PROJ: ${{ inputs.rm_project_id }}
           RM_FIELD_ID: ${{ inputs.rm_field_id }}
           RM_URL: ${{ inputs.rm_url }}
           RM_KEY: ${{ secrets.rm_key }}
+          PREFIX: "${{ inputs.draft_prefix || 'WIP ' }}"
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

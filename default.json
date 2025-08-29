@@ -1,7 +1,12 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:base", "config:js-app"],
+  "baseBranches": ["main"],
+  "branchPrefix": "renovate/",
+  "dependencyDashboard": true,
+  "enabledManagers": ["regex", "custom.regex", "npm"],
   "branchConcurrentLimit": 0,
+  "lockFileMaintenance": { "enabled": true },
   "prConcurrentLimit": 0,
   "prHourlyLimit": 0,
   "rebaseWhen": "conflicted",
@@ -13,18 +18,68 @@
     {
       "matchDepTypes": ["dependencies", "bundledDependencies"],
       "additionalBranchPrefix": "prod/",
-      "commitMessagePrefix": "[Production] ",
+      "commitMessagePrefix": "[Prod] ",
       "draftPR": true
     },
     {
-      "matchDepTypes": ["devDependencies"],
+      "matchManagers": ["nuget", "regex", "custom.regex"],
+      "additionalBranchPrefix": "prod/",
+      "commitMessagePrefix": "[Prod] ",
+      "rangeStrategy": "replace",
+      "draftPR": true
+    },
+    {
+      "matchDepTypes": ["devDependencies", "development", "test"],
+      "rangeStrategy": "replace",
       "additionalBranchPrefix": "dev/",
-      "commitMessagePrefix": "[Development] "
+      "commitMessagePrefix": "[Dev] "
+    },
+    {
+      "matchManagers": ["poetry"],
+      "rangeStrategy": "replace",
+      "additionalBranchPrefix": "build/",
+      "commitMessagePrefix": "[Build] "
+    },
+    {
+      "matchDepTypes": ["engines"],
+      "rangeStrategy": "replace",
+      "additionalBranchPrefix": "build/",
+      "commitMessagePrefix": "[Build] "
+    },
+    {
+      "matchCategories": ["ci", "cd", "node"],
+      "rangeStrategy": "replace",
+      "additionalBranchPrefix": "build/",
+      "commitMessagePrefix": "[Build] "
     },
     {
       "matchDepTypes": ["peerDependencies", "optionalDependencies"],
+      "rangeStrategy": "replace",
       "additionalBranchPrefix": "opt/",
-      "commitMessagePrefix": "[Optional] "
+      "commitMessagePrefix": "[Opt] ",
+      "draftPR": true
+    },
+    {
+      "matchPackagePrefixes": [
+        "jest",
+        "@testing-library/",
+        "eventsourcemock",
+        "canvas",
+        "mutation-observer",
+        "jscpd",
+        "mock-jwks",
+        "nock",
+        "wait-for-expect",
+        "ts-jest",
+        "license-checker",
+        "local-cors-proxy",
+        "source-map-explorer"
+      ],
+      "groupName": "testing"
+    },
+    {
+      "matchDepTypes": ["test"],
+      "groupName": "testing"
     },
     {
       "matchPackagePrefixes": ["eslint", "@typescript-eslint/"],
@@ -37,6 +92,10 @@
     {
       "matchPackagePrefixes": ["antd", "@ant-design/", "moment-timezone"],
       "groupName": "antd"
+    },
+    {
+      "matchPackagePrefixes": ["@action-validator/"],
+      "groupName": "action-validator"
     },
     {
       "matchPackageNames": [
@@ -118,12 +177,20 @@
       "groupName": "Saltarelle"
     },
     {
-      "matchPackagePrefixes": ["Nancy"],
+      "matchPackagePrefixes": ["Nancy", "AjaxMin", "Owin"],
       "groupName": "Nancy"
     },
     {
-      "matchPackagePrefixes": ["Microsoft.", "MSBuild.", "System."],
+      "matchPackagePrefixes": ["Microsoft.", "MSBuild.", "System.", "EntityFramework"],
       "groupName": "Microsoft"
+    },
+    {
+      "matchPackagePrefixes": ["mganss", "HtmlSanitizer", "AngleSharp"],
+      "groupName": "HtmlSanitizer"
+    },
+    {
+      "matchPackagePrefixes": ["Aspose."],
+      "groupName": "Aspose"
     },
     {
       "matchPackageNames": ["jsonwebtoken", "jwks-rsa"],
@@ -146,12 +213,64 @@
       "groupName": "openapi"
     },
     {
+      "matchManagers": ["nuget", "regex", "custom.regex"],
+      "matchPackagePrefixes": [
+        "CsQuery",
+        "StyleCop",
+        "Effort.EF6",
+        "NUnit",
+        "coverlet",
+        "AltCover",
+        "MSTest",
+        "Doxygen",
+        "dotnet-format",
+        "Microsoft.NET.Test",
+        "Microsoft.CodeAnalysis",
+        "ReportGenerator",
+        "Moq",
+        "MSGReader",
+        "NMemory",
+        "Castle.Core"
+      ],
+      "additionalBranchPrefix": "dev/",
+      "commitMessagePrefix": "[Dev] ",
+      "groupName": "Testing",
+      "draftPR": false
+    },
+    {
       "matchUpdateTypes": ["pin", "pinDigest"],
       "groupName": "Pin Dependencies"
     },
     {
       "matchUpdateTypes": ["lockFileMaintenance"],
+      "additionalBranchPrefix": "dev/",
+      "commitMessagePrefix": "[Dev] ",
       "groupName": "Lock File Maintenance"
+    },
+    {
+      "matchCategories": ["ci", "cd"],
+      "matchPackagePrefixes": ["Azure"],
+      "rangeStrategy": "replace",
+      "additionalBranchPrefix": "deploy/",
+      "commitMessagePrefix": "[Deploy] "
+    },
+    {
+      "matchDatasources": ["nuget"],
+      "registryUrls": ["https://api.nuget.org/v3/index.json", "https://community.chocolatey.org/api/v2/"]
+    }
+  ],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "fileMatch": [
+        "(^|/)(workflow-templates|\\.(?:github|gitea|forgejo|gitlab)/(?:workflows|actions|ci))/.+\\.ya?ml$",
+        "(^|/)action\\.ya?ml$",
+        "(^|/)ci\\.ya?ml$",
+        "\\.gitlab-ci\\.ya?ml$"
+      ],
+      "matchStrings": [
+        "# renovate: datasource=(?<datasource>[a-zA-Z0-9-._]+?) depName=(?<depName>[^\\s]+?)(?: (?:lookupName|packageName)=(?<packageName>[^\\s]+?))?(?: versioning=(?<versioning>[^\\s]+?))?(?: extractVersion=(?<extractVersion>[^\\s]+?))?\\s+[A-Za-z0-9_]+?_VERSION\\s*:\\s*[\"']?(?<currentValue>.+?)[\"']?\\s"
+      ]
     }
   ]
 }
