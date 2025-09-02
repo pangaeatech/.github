@@ -32,25 +32,22 @@
       "matchDepTypes": ["devDependencies", "development", "test"],
       "rangeStrategy": "replace",
       "additionalBranchPrefix": "dev/",
-      "commitMessagePrefix": "[Dev] "
-    },
-    {
-      "matchManagers": ["poetry"],
-      "rangeStrategy": "replace",
-      "additionalBranchPrefix": "build/",
-      "commitMessagePrefix": "[Build] "
+      "commitMessagePrefix": "[Dev] ",
+      "draftPR": false
     },
     {
       "matchDepTypes": ["engines"],
       "rangeStrategy": "replace",
       "additionalBranchPrefix": "build/",
-      "commitMessagePrefix": "[Build] "
+      "commitMessagePrefix": "[Build] ",
+      "draftPR": false
     },
     {
       "matchCategories": ["ci", "cd", "node"],
       "rangeStrategy": "replace",
       "additionalBranchPrefix": "build/",
-      "commitMessagePrefix": "[Build] "
+      "commitMessagePrefix": "[Build] ",
+      "draftPR": false
     },
     {
       "matchDepTypes": ["peerDependencies", "optionalDependencies"],
@@ -197,6 +194,7 @@
         "StyleCop",
         "Effort.EF6",
         "NUnit",
+        "JustMock",
         "coverlet",
         "AltCover",
         "MSTest",
