@@ -20,6 +20,6 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - run: gh pr view || gh pr create -d -B "main" -t "${{ github.ref_name }}" -b ""
+      - run: gh pr view || gh pr create -B "main" -t "${{ github.ref_name }}" -b ""
         env:
           GH_TOKEN: ${{ github.token }}
