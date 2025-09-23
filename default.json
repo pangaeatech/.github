@@ -184,6 +184,10 @@
       "groupName": "suneditor"
     },
     {
+      "matchPackagePrefixes": ["Newtonsoft"],
+      "groupName": "Newtonsoft"
+    },
+    {
       "matchPackagePrefixes": ["typeconv", "openapi-types", "swagger-", "ts-json-schema-generator", "ajv-cli"],
       "groupName": "openapi"
     },
@@ -194,12 +198,14 @@
         "StyleCop",
         "Effort.EF6",
         "NUnit",
+        "pmd",
         "JustMock",
         "coverlet",
         "AltCover",
         "MSTest",
         "Doxygen",
         "dotnet-format",
+        "upgrade-assistant",
         "Microsoft.NET.Test",
         "Microsoft.CodeAnalysis",
         "ReportGenerator",
