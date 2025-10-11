@@ -3,6 +3,7 @@
   "extends": ["config:base", "config:js-app"],
   "baseBranches": ["main"],
   "branchPrefix": "renovate/",
+  "configMigration": true,
   "dependencyDashboard": true,
   "enabledManagers": ["regex", "custom.regex", "npm"],
   "branchConcurrentLimit": 0,
