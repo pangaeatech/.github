@@ -4,6 +4,7 @@
   "baseBranches": ["main"],
   "branchPrefix": "renovate/",
   "dependencyDashboard": true,
+  "configMigration": true,
   "enabledManagers": ["regex", "custom.regex", "npm"],
   "branchConcurrentLimit": 0,
   "lockFileMaintenance": { "enabled": true },
@@ -55,6 +56,13 @@
       "additionalBranchPrefix": "opt/",
       "commitMessagePrefix": "[Opt] ",
       "draftPR": true
+    },
+    {
+      "matchPackagePrefixes": ["pangaea-gitlab"],
+      "rangeStrategy": "replace",
+      "additionalBranchPrefix": "build/",
+      "commitMessagePrefix": "[Build] ",
+      "draftPR": false
     },
     {
       "matchPackagePrefixes": [
