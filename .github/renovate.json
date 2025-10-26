@@ -1,13 +1,13 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["github>pangaeatech/.github"],
-  "baseBranches": ["main"],
+  "baseBranchPatterns": ["main"],
   "branchPrefix": "renovate/",
   "enabledManagers": ["npm", "nvm"],
   "packageRules": [
     {
-      "matchPackagePrefixes": ["@action-validator/"],
-      "groupName": "action-validator"
+      "groupName": "action-validator",
+      "matchPackageNames": ["@action-validator/{/,}**"]
     }
   ]
 }
