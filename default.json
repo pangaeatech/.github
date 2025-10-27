@@ -1,11 +1,11 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:base", "config:js-app"],
-  "baseBranches": ["main"],
+  "extends": ["config:recommended", "config:js-app"],
+  "baseBranchPatterns": ["main"],
   "branchPrefix": "renovate/",
   "dependencyDashboard": true,
   "configMigration": true,
-  "enabledManagers": ["regex", "custom.regex", "npm"],
+  "enabledManagers": ["custom.regex", "npm"],
   "branchConcurrentLimit": 0,
   "lockFileMaintenance": { "enabled": true },
   "prConcurrentLimit": 0,
@@ -23,7 +23,7 @@
       "draftPR": true
     },
     {
-      "matchManagers": ["nuget", "regex", "custom.regex"],
+      "matchManagers": ["nuget", "custom.regex"],
       "additionalBranchPrefix": "prod/",
       "commitMessagePrefix": "[Prod] ",
       "rangeStrategy": "replace",
@@ -58,27 +58,27 @@
       "draftPR": true
     },
     {
-      "matchPackagePrefixes": ["pangaea-gitlab"],
+      "matchPackageNames": ["pangaea-gitlab{/,}**"],
       "rangeStrategy": "replace",
       "additionalBranchPrefix": "build/",
       "commitMessagePrefix": "[Build] ",
       "draftPR": false
     },
     {
-      "matchPackagePrefixes": [
-        "jest",
-        "@testing-library/",
-        "eventsourcemock",
-        "canvas",
-        "mutation-observer",
-        "jscpd",
-        "mock-jwks",
-        "nock",
-        "wait-for-expect",
-        "ts-jest",
-        "license-checker",
-        "local-cors-proxy",
-        "source-map-explorer"
+      "matchPackageNames": [
+        "jest{/,}**",
+        "@testing-library{/,}**",
+        "eventsourcemock{/,}**",
+        "canvas{/,}**",
+        "mutation-observer{/,}**",
+        "jscpd{/,}**",
+        "mock-jwks{/,}**",
+        "nock{/,}**",
+        "wait-for-expect{/,}**",
+        "ts-jest{/,}**",
+        "license-checker{/,}**",
+        "local-cors-proxy{/,}**",
+        "source-map-explorer{/,}**"
       ],
       "groupName": "testing"
     },
@@ -87,19 +87,26 @@
       "groupName": "testing"
     },
     {
-      "matchPackagePrefixes": ["eslint", "@typescript-eslint/"],
+      "matchPackageNames": ["eslint{/,}**", "@typescript-eslint{/,}**"],
       "groupName": "eslint"
     },
     {
-      "matchPackagePrefixes": ["mui", "@mui/", "@date-io/", "@emotion/", "luxon", "material-ui"],
+      "matchPackageNames": [
+        "mui{/,}**",
+        "@mui{/,}**",
+        "@date-io{/,}**",
+        "@emotion{/,}**",
+        "luxon{/,}**",
+        "material-ui{/,}**"
+      ],
       "groupName": "material-ui"
     },
     {
-      "matchPackagePrefixes": ["antd", "@ant-design/", "moment-timezone"],
+      "matchPackageNames": ["antd{/,}**", "@ant-design{/,}**", "moment-timezone{/,}**"],
       "groupName": "antd"
     },
     {
-      "matchPackagePrefixes": ["@action-validator/"],
+      "matchPackageNames": ["@action-validator{/,}**"],
       "groupName": "action-validator"
     },
     {
@@ -120,7 +127,7 @@
       "groupName": "react"
     },
     {
-      "matchPackagePrefixes": ["react-intl", "react-number-format", "browser-lang", "@lingui"],
+      "matchPackageNames": ["react-intl{/,}**", "react-number-format{/,}**", "browser-lang{/,}**", "@lingui{/,}**"],
       "groupName": "intl"
     },
     {
@@ -132,15 +139,15 @@
       "groupName": "resium"
     },
     {
-      "matchPackagePrefixes": ["typescript", "typedoc", "@types/"],
+      "matchPackageNames": ["typescript{/,}**", "typedoc{/,}**", "@types{/,}**"],
       "groupName": "typescript"
     },
     {
-      "matchPackagePrefixes": ["@craco/", "react-scripts", "craco", "env-cmd"],
+      "matchPackageNames": ["@craco{/,}**", "react-scripts{/,}**", "craco{/,}**", "env-cmd{/,}**"],
       "groupName": "react-scripts"
     },
     {
-      "matchPackagePrefixes": ["electron"],
+      "matchPackageNames": ["electron{/,}**"],
       "groupName": "electron"
     },
     {
@@ -152,27 +159,27 @@
       "groupName": "jquery"
     },
     {
-      "matchPackagePrefixes": ["Adenson.", "Pangaea."],
+      "matchPackageNames": ["Adenson.{/,}**", "Pangaea.{/,}**"],
       "groupName": "PangaeaCore"
     },
     {
-      "matchPackagePrefixes": ["Saltarelle.", "ScriptSharp."],
+      "matchPackageNames": ["Saltarelle.{/,}**", "ScriptSharp.{/,}**"],
       "groupName": "Saltarelle"
     },
     {
-      "matchPackagePrefixes": ["Nancy", "AjaxMin", "Owin"],
+      "matchPackageNames": ["Nancy{/,}**", "AjaxMin{/,}**", "Owin{/,}**"],
       "groupName": "Nancy"
     },
     {
-      "matchPackagePrefixes": ["Microsoft.", "MSBuild.", "System.", "EntityFramework"],
+      "matchPackageNames": ["Microsoft.{/,}**", "MSBuild.{/,}**", "System.{/,}**", "EntityFramework{/,}**"],
       "groupName": "Microsoft"
     },
     {
-      "matchPackagePrefixes": ["mganss", "HtmlSanitizer", "AngleSharp"],
+      "matchPackageNames": ["mganss{/,}**", "HtmlSanitizer{/,}**", "AngleSharp{/,}**"],
       "groupName": "HtmlSanitizer"
     },
     {
-      "matchPackagePrefixes": ["Aspose."],
+      "matchPackageNames": ["Aspose.{/,}**"],
       "groupName": "Aspose"
     },
     {
@@ -180,47 +187,53 @@
       "groupName": "jwks"
     },
     {
-      "matchPackagePrefixes": ["azure", "@azure"],
+      "matchPackageNames": ["azure{/,}**", "@azure{/,}**"],
       "groupName": "azure"
     },
     {
-      "matchPackagePrefixes": ["@fortawesome"],
+      "matchPackageNames": ["@fortawesome{/,}**"],
       "groupName": "fontawesome"
     },
     {
-      "matchPackagePrefixes": ["suneditor"],
+      "matchPackageNames": ["suneditor{/,}**"],
       "groupName": "suneditor"
     },
     {
-      "matchPackagePrefixes": ["Newtonsoft"],
+      "matchPackageNames": ["Newtonsoft{/,}**"],
       "groupName": "Newtonsoft"
     },
     {
-      "matchPackagePrefixes": ["typeconv", "openapi-types", "swagger-", "ts-json-schema-generator", "ajv-cli"],
+      "matchPackageNames": [
+        "typeconv{/,}**",
+        "openapi-types{/,}**",
+        "swagger-{/,}**",
+        "ts-json-schema-generator{/,}**",
+        "ajv-cli{/,}**"
+      ],
       "groupName": "openapi"
     },
     {
-      "matchManagers": ["nuget", "regex", "custom.regex"],
-      "matchPackagePrefixes": [
-        "CsQuery",
-        "StyleCop",
-        "Effort.EF6",
-        "NUnit",
-        "pmd",
-        "JustMock",
-        "coverlet",
-        "AltCover",
-        "MSTest",
-        "Doxygen",
-        "dotnet-format",
-        "upgrade-assistant",
-        "Microsoft.NET.Test",
-        "Microsoft.CodeAnalysis",
-        "ReportGenerator",
-        "Moq",
-        "MSGReader",
-        "NMemory",
-        "Castle.Core"
+      "matchManagers": ["nuget", "custom.regex"],
+      "matchPackageNames": [
+        "CsQuery{/,}**",
+        "StyleCop{/,}**",
+        "Effort.EF6{/,}**",
+        "NUnit{/,}**",
+        "pmd{/,}**",
+        "JustMock{/,}**",
+        "coverlet{/,}**",
+        "AltCover{/,}**",
+        "MSTest{/,}**",
+        "Doxygen{/,}**",
+        "dotnet-format{/,}**",
+        "upgrade-assistant{/,}**",
+        "Microsoft.NET.Test{/,}**",
+        "Microsoft.CodeAnalysis{/,}**",
+        "ReportGenerator{/,}**",
+        "Moq{/,}**",
+        "MSGReader{/,}**",
+        "NMemory{/,}**",
+        "Castle.Core{/,}**"
       ],
       "additionalBranchPrefix": "dev/",
       "commitMessagePrefix": "[Dev] ",
@@ -239,7 +252,7 @@
     },
     {
       "matchCategories": ["ci", "cd"],
-      "matchPackagePrefixes": ["Azure"],
+      "matchPackageNames": ["Azure{/,}**"],
       "rangeStrategy": "replace",
       "additionalBranchPrefix": "deploy/",
       "commitMessagePrefix": "[Deploy] "
@@ -257,11 +270,11 @@
   "customManagers": [
     {
       "customType": "regex",
-      "fileMatch": [
-        "(^|/)(workflow-templates|\\.(?:github|gitea|forgejo|gitlab)/(?:workflows|actions|ci))/.+\\.ya?ml$",
-        "(^|/)action\\.ya?ml$",
-        "(^|/)ci\\.ya?ml$",
-        "\\.gitlab-ci\\.ya?ml$"
+      "managerFilePatterns": [
+        "/(^|/)(workflow-templates|\\.(?:github|gitea|forgejo|gitlab)/(?:workflows|actions|ci))/.+\\.ya?ml$/",
+        "/(^|/)action\\.ya?ml$/",
+        "/(^|/)ci\\.ya?ml$/",
+        "/\\.gitlab-ci\\.ya?ml$/"
       ],
       "matchStrings": [
         "# renovate: datasource=(?<datasource>[a-zA-Z0-9-._]+?) depName=(?<depName>[^\\s]+?)(?: (?:lookupName|packageName)=(?<packageName>[^\\s]+?))?(?: versioning=(?<versioning>[^\\s]+?))?(?: extractVersion=(?<extractVersion>[^\\s]+?))?\\s+[A-Za-z0-9_]+?_VERSION\\s*:\\s*[\"']?(?<currentValue>.+?)[\"']?\\s"
@@ -269,7 +282,7 @@
     },
     {
       "customType": "regex",
-      "fileMatch": ["\\.nuspec$"],
+      "managerFilePatterns": ["/\\.nuspec$/"],
       "matchStringsStrategy": "any",
       "matchStrings": ["<dependency\\s+id=\"(?<depName>.*?)\"\\s+version=\"(?<currentValue>.*?)\"\\s*\\/>"],
       "datasourceTemplate": "nuget",
