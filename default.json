@@ -213,7 +213,7 @@
       "groupName": "openapi"
     },
     {
-      "matchManagers": ["nuget", "regex", "custom.regex"],
+      "matchManagers": ["nuget", "custom.regex"],
       "matchPackageNames": [
         "CsQuery{/,}**",
         "StyleCop{/,}**",
@@ -270,11 +270,11 @@
   "customManagers": [
     {
       "customType": "regex",
-      "fileMatch": [
-        "(^|/)(workflow-templates|\\.(?:github|gitea|forgejo|gitlab)/(?:workflows|actions|ci))/.+\\.ya?ml$",
-        "(^|/)action\\.ya?ml$",
-        "(^|/)ci\\.ya?ml$",
-        "\\.gitlab-ci\\.ya?ml$"
+      "managerFilePatterns": [
+        "/(^|/)(workflow-templates|\\.(?:github|gitea|forgejo|gitlab)/(?:workflows|actions|ci))/.+\\.ya?ml$/",
+        "/(^|/)action\\.ya?ml$/",
+        "/(^|/)ci\\.ya?ml$/",
+        "/\\.gitlab-ci\\.ya?ml$/"
       ],
       "matchStrings": [
         "# renovate: datasource=(?<datasource>[a-zA-Z0-9-._]+?) depName=(?<depName>[^\\s]+?)(?: (?:lookupName|packageName)=(?<packageName>[^\\s]+?))?(?: versioning=(?<versioning>[^\\s]+?))?(?: extractVersion=(?<extractVersion>[^\\s]+?))?\\s+[A-Za-z0-9_]+?_VERSION\\s*:\\s*[\"']?(?<currentValue>.+?)[\"']?\\s"
@@ -282,7 +282,7 @@
     },
     {
       "customType": "regex",
-      "fileMatch": ["\\.nuspec$"],
+      "managerFilePatterns": ["/\\.nuspec$/"],
       "matchStringsStrategy": "any",
       "matchStrings": ["<dependency\\s+id=\"(?<depName>.*?)\"\\s+version=\"(?<currentValue>.*?)\"\\s*\\/>"],
       "datasourceTemplate": "nuget",
