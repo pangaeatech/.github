@@ -1,6 +1,6 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["../default.json"],
+  "extends": ["github>pangaeatech/.github"],
   "baseBranchPatterns": ["main"],
   "branchPrefix": "renovate/",
   "enabledManagers": ["npm", "nvm"],
