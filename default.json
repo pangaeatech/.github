@@ -3,6 +3,7 @@
   "extends": ["config:recommended", "config:js-app"],
   "baseBranchPatterns": ["main"],
   "branchPrefix": "renovate/",
+  "configMigration": true,
   "dependencyDashboard": true,
   "configMigration": true,
   "enabledManagers": ["custom.regex", "npm"],
@@ -37,17 +38,11 @@
       "draftPR": false
     },
     {
-      "matchDepTypes": ["engines"],
+      "matchCategories": ["ci", "cd", "node", "engines"],
       "rangeStrategy": "replace",
       "additionalBranchPrefix": "build/",
       "commitMessagePrefix": "[Build] ",
-      "draftPR": false
-    },
-    {
-      "matchCategories": ["ci", "cd", "node"],
-      "rangeStrategy": "replace",
-      "additionalBranchPrefix": "build/",
-      "commitMessagePrefix": "[Build] ",
+      "groupName": "build",
       "draftPR": false
     },
     {
@@ -56,13 +51,6 @@
       "additionalBranchPrefix": "opt/",
       "commitMessagePrefix": "[Opt] ",
       "draftPR": true
-    },
-    {
-      "matchPackageNames": ["pangaea-gitlab{/,}**"],
-      "rangeStrategy": "replace",
-      "additionalBranchPrefix": "build/",
-      "commitMessagePrefix": "[Build] ",
-      "draftPR": false
     },
     {
       "matchPackageNames": [
@@ -238,6 +226,15 @@
       "additionalBranchPrefix": "dev/",
       "commitMessagePrefix": "[Dev] ",
       "groupName": "Testing",
+      "draftPR": false
+    },
+    {
+      "matchManagers": ["custom.regex"],
+      "rangeStrategy": "replace",
+      "matchPackageNames": ["pangaea-gitlab{/,}**"],
+      "additionalBranchPrefix": "build/",
+      "commitMessagePrefix": "[Build] ",
+      "groupName": "build",
       "draftPR": false
     },
     {
