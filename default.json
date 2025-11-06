@@ -230,7 +230,7 @@
     },
     {
       "rangeStrategy": "replace",
-      "matchPackageNames": ["pangaea-gitlab{/,}**"],
+      "matchPackageNames": ["pangaea-gitlab"],
       "additionalBranchPrefix": "build/",
       "commitMessagePrefix": "[Build] ",
       "groupName": "build",
