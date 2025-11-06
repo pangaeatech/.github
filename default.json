@@ -229,7 +229,6 @@
       "draftPR": false
     },
     {
-      "matchManagers": ["custom.regex"],
       "rangeStrategy": "replace",
       "matchPackageNames": ["pangaea-gitlab{/,}**"],
       "additionalBranchPrefix": "build/",
