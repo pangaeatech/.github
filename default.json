@@ -229,10 +229,11 @@
       "draftPR": false
     },
     {
-      "rangeStrategy": "replace",
+      "matchManagers": ["nuget", "custom.regex"],
       "matchPackageNames": ["pangaea-gitlab"],
       "additionalBranchPrefix": "build/",
       "commitMessagePrefix": "[Build] ",
+      "rangeStrategy": "replace",
       "groupName": "build",
       "draftPR": false
     },
