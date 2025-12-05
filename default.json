@@ -290,7 +290,7 @@
       "managerFilePatterns": ["/\\.csproj$/"],
       "matchStringsStrategy": "any",
       "matchStrings": [
-        "<-- renovate: depName=(?<depName>[^\\s]+?) -->\\s+<[A-Za-z0-9_]+?Version>\\s*[\"']?(?<currentValue>.+?)[\"']?\\s*<"
+        "<.-- renovate: depName=(?<depName>[^\\s]+?) -->\\s+<[A-Za-z0-9_]+?Version>\\s*[\"']?(?<currentValue>.+?)[\"']?\\s*<"
       ],
       "datasourceTemplate": "nuget",
       "versioningTemplate": "nuget"
