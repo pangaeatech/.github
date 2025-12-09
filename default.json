@@ -230,7 +230,7 @@
     },
     {
       "matchManagers": ["nuget", "custom.regex"],
-      "matchPackageNames": ["pangaea-gitlab"],
+      "matchPackageNames": ["pangaea-gitlab{/,}**"],
       "additionalBranchPrefix": "build/",
       "commitMessagePrefix": "[Build] ",
       "rangeStrategy": "replace",
