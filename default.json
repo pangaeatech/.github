@@ -229,7 +229,6 @@
       "draftPR": false
     },
     {
-      "matchManagers": ["nuget", "custom.regex"],
       "matchPackageNames": ["pangaea-gitlab{/,}**"],
       "additionalBranchPrefix": "build/",
       "commitMessagePrefix": "[Build] ",
