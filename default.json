@@ -229,7 +229,6 @@
       "draftPR": false
     },
     {
-      "matchManagers": ["nuget", "custom.regex"],
       "matchPackageNames": ["pangaea-gitlab{/,}**"],
       "additionalBranchPrefix": "build/",
       "commitMessagePrefix": "[Build] ",
@@ -261,7 +260,7 @@
     {
       "matchDatasources": ["gitlab-releases"],
       "registryUrls": ["https://code.cdso.army.mil"],
-      "versioning": "regex:^v(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)(-rc(?<build>\\d))?$"
+      "versioning": "regex:^v(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)(-rc(?<build>\\d+))?$"
     }
   ],
   "customManagers": [
