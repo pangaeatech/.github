@@ -13,10 +13,12 @@ on:
         description: The branch to open the pull request against
         required: false
         type: string
+        default: "main"
       pr_title:
         description: The pull request title
         required: false
         type: string
+        default: ""
     outputs:
       pr_url:
         description: URL of the pull request for the current branch

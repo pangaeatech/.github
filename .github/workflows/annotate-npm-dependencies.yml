@@ -24,12 +24,14 @@ on:
     inputs:
       pr_url:
         # The Pull Request URL
-        required: true
+        required: false
         type: string
+        default: "https://github.com/"
       branch:
         # The Pull Request Branch Name
-        required: true
+        required: false
         type: string
+        default: ""
 jobs:
   annotate:
     runs-on: ubuntu-latest
@@ -64,7 +66,7 @@ jobs:
           echo "\`\`\`" >> body.txt;
           gh pr comment "$PR_URL" -F body.txt;
         env:
-          PR_URL: ${{ inputs.pr_url }}
+          PR_URL: ${{ inputs.pr_url || github.event.pull_request.html_url || 'https://github.com/' }}
           PR_DIR: ${{ steps.metadata.outputs.directory }}
           PR_DEPS: ${{ steps.metadata.outputs.dependency-names }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

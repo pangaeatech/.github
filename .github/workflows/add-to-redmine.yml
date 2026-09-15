@@ -34,50 +34,60 @@ on:
     inputs:
       pr_num:
         # The Pull Request Number
-        required: true
+        required: false
         type: string
+        default: "0"
       pr_url:
         # The Pull Request URL
-        required: true
+        required: false
         type: string
+        default: "https://github.com/"
       pr_subject:
         # The Pull Request Subject
-        required: true
+        required: false
         type: string
+        default: "Pull Request"
       pr_body:
         # The Pull Request Description (optional)
         required: false
         type: string
+        default: ""
       rm_url:
         # The Redmine URL
-        required: true
+        required: false
         type: string
+        default: "https://redmine.pangaeatech.com/"
       rm_project_id:
         # The Project's unique id
-        required: true
+        required: false
         type: string
+        default: "project-id"
       rm_tracker_id:
         # The redmine tracker ID to create the issue in (optional)
         required: false
         type: number
+        default: 29
       rm_version_id:
         # The redmine milestone ID to create the issue in (optional)
         required: false
         type: number
+        default: 123
       rm_field_id:
         # The redmine custom field ID to store the PR number in (optional)
         required: false
         type: number
+        default: 11
       draft_prefix:
         # If the Pull Request has this prefix (case insensitive), then it will be set to Draft upon being added successfully to Redmine (optional - defaults to "WIP " if not specified).
         required: false
         type: string
+        default: "WIP "
     secrets:
       rm_key:
         # The REST API Key of the redmine user to post the issue as
         # NOTE: This user MUST have permission to "Add issues" to the
         #       project specified by rm_project_id
-        required: true
+        required: false
 jobs:
   annotate:
     runs-on: ubuntu-latest
@@ -109,7 +119,7 @@ jobs:
           fi;
         env:
           PR_URL: ${{ inputs.pr_url }}
-          PR_NUM: ${{ Inputs.pr_num }}
+          PR_NUM: ${{ inputs.pr_num || github.event.pull_request.number || github.event.issue.number || '0' }}
           PR_SUBJECT: ${{ inputs.pr_subject }}
           PR_BODY: ${{ inputs.pr_body }}
           RM_PROJECT_ID: ${{ inputs.rm_project_id }}
@@ -117,7 +127,7 @@ jobs:
           RM_VERSION_ID: ${{ inputs.rm_version_id }}
           RM_FIELD_ID: ${{ inputs.rm_field_id }}
           RM_URL: ${{ inputs.rm_url }}
-          RM_KEY: ${{ secrets.rm_key }}
+          RM_KEY: ${{ secrets.rm_key || '' }}
           PREFIX: "${{ inputs.draft_prefix || 'WIP ' }}"
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
