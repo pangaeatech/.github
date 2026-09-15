@@ -44,12 +44,10 @@ on:
         # The Pull Request Number
         required: false
         type: string
-        default: "0"
       pr_url:
         # The Pull Request URL
         required: false
         type: string
-        default: "https://github.com/"
       rm_url:
         # The Redmine URL
         required: false
@@ -59,7 +57,6 @@ on:
         # The redmine issue to link to
         required: false
         type: string
-        default: "0"
       rm_field_id:
         # The redmine custom field ID to store the PR number in
         required: false
@@ -75,6 +72,34 @@ jobs:
   annotate:
     runs-on: ubuntu-latest
     steps:
+      - name: Validate Redmine API key
+        run: |
+          if [ -z "$RM_KEY" ]; then
+            echo "::error::Missing required secret rm_key"
+            exit 1
+          fi
+        env:
+          RM_KEY: ${{ secrets.rm_key }}
+
+      - name: Validate required runtime values
+        run: |
+          if [ -z "$PR_NUM" ]; then
+            echo "::error::Unable to resolve pr_num input or event pull request number"
+            exit 1
+          fi
+          if [ -z "$PR_URL" ]; then
+            echo "::error::Unable to resolve pr_url input or event pull request URL"
+            exit 1
+          fi
+          if [ -z "$RM_ISSUE" ]; then
+            echo "::error::Missing rm_issue input"
+            exit 1
+          fi
+        env:
+          PR_URL: ${{ inputs.pr_url || github.event.pull_request.html_url }}
+          PR_NUM: ${{ inputs.pr_num || github.event.pull_request.number || github.event.issue.number }}
+          RM_ISSUE: ${{ inputs.rm_issue }}
+
       - name: Link task to redmine
         run: |
           sudo apt-get install -y jq curl
@@ -88,8 +113,8 @@ jobs:
           curl -s -X PUT -H "Content-Type: application/json" -d "@body.json" "${RM_URL}/issues/${RM_ISSUE}.json"
           gh pr comment "$PR_URL" -b "Linked to [Redmine Task ${RM_ISSUE}]($RM_URL/issues/${RM_ISSUE})";
         env:
-          PR_URL: ${{ inputs.pr_url }}
-          PR_NUM: ${{ inputs.pr_num }}
+          PR_URL: ${{ inputs.pr_url || github.event.pull_request.html_url }}
+          PR_NUM: ${{ inputs.pr_num || github.event.pull_request.number || github.event.issue.number }}
           RM_ISSUE: ${{ inputs.rm_issue }}
           RM_FIELD_ID: ${{ inputs.rm_field_id }}
           RM_URL: ${{ inputs.rm_url }}

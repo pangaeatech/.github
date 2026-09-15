@@ -92,7 +92,7 @@ jobs:
       rm_version_id: ${{ inputs.rm_version_id }}
       rm_field_id: ${{ inputs.rm_field_id }}
     secrets:
-      rm_key: ${{ secrets.rm_key || '' }}
+      rm_key: ${{ secrets.rm_key }}
 
   add-comment:
     if: ${{ inputs.enable_update_redmine_activity == 'true' && github.event_name == 'issue_comment' && github.event.issue.pull_request }}
@@ -107,7 +107,7 @@ jobs:
       rm_project_id: ${{ inputs.rm_project_id }}
       rm_field_id: ${{ inputs.rm_field_id }}
     secrets:
-      rm_key: ${{ secrets.rm_key || '' }}
+      rm_key: ${{ secrets.rm_key }}
 
   add-review-comment:
     if: ${{ inputs.enable_update_redmine_activity == 'true' && github.event_name == 'pull_request_review_comment' }}
@@ -122,7 +122,7 @@ jobs:
       rm_project_id: ${{ inputs.rm_project_id }}
       rm_field_id: ${{ inputs.rm_field_id }}
     secrets:
-      rm_key: ${{ secrets.rm_key || '' }}
+      rm_key: ${{ secrets.rm_key }}
 
   add-review:
     if: ${{ inputs.enable_update_redmine_activity == 'true' && github.event_name == 'pull_request_review' }}
@@ -137,7 +137,7 @@ jobs:
       rm_project_id: ${{ inputs.rm_project_id }}
       rm_field_id: ${{ inputs.rm_field_id }}
     secrets:
-      rm_key: ${{ secrets.rm_key || '' }}
+      rm_key: ${{ secrets.rm_key }}
 
   add-status:
     if: ${{ inputs.enable_update_redmine_activity == 'true' && github.event_name == 'pull_request' && (github.event.action != 'closed' || !github.event.pull_request.merged) && github.event.action != 'edited' }}
@@ -151,7 +151,7 @@ jobs:
       rm_project_id: ${{ inputs.rm_project_id }}
       rm_field_id: ${{ inputs.rm_field_id }}
     secrets:
-      rm_key: ${{ secrets.rm_key || '' }}
+      rm_key: ${{ secrets.rm_key }}
 
   add-merged:
     if: ${{ inputs.enable_update_redmine_activity == 'true' && github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged }}
@@ -165,7 +165,7 @@ jobs:
       rm_project_id: ${{ inputs.rm_project_id }}
       rm_field_id: ${{ inputs.rm_field_id }}
     secrets:
-      rm_key: ${{ secrets.rm_key || '' }}
+      rm_key: ${{ secrets.rm_key }}
 
   update-issue:
     if: ${{ inputs.enable_update_redmine_activity == 'true' && github.event_name == 'pull_request' && github.event.action == 'edited' && contains(fromJSON('["dependabot[bot]","renovate[bot]","mend-bolt-for-github[bot]"]'), github.event.pull_request.user.login) }}
@@ -179,18 +179,38 @@ jobs:
       rm_project_id: ${{ inputs.rm_project_id }}
       rm_field_id: ${{ inputs.rm_field_id }}
     secrets:
-      rm_key: ${{ secrets.rm_key || '' }}
+      rm_key: ${{ secrets.rm_key }}
 
   pull-request:
-    if: ${{ inputs.enable_auto_add_pr == 'true' && github.event_name == 'push' }}
+    needs: resolve-existing-pull-request
+    if: ${{ inputs.enable_auto_add_pr == 'true' && github.event_name == 'push' && github.ref_name != inputs.default_branch && !startsWith(github.ref_name, 'dependabot/') && !startsWith(github.ref_name, 'renovate/') && !startsWith(github.ref_name, 'whitesource/') && needs.resolve-existing-pull-request.outputs.pr_url == '' }}
     uses: pangaeatech/.github/.github/workflows/auto-add-pr.yml@main
     with:
       base_branch: ${{ inputs.default_branch }}
       pr_title: ${{ github.ref_name }}
+      create_if_missing: ${{ inputs.enable_auto_add_pr }}
+
+  resolve-existing-pull-request:
+    if: ${{ inputs.enable_link_or_create_redmine_from_branch == 'true' && github.event_name == 'push' && github.ref_name != inputs.default_branch && !startsWith(github.ref_name, 'dependabot/') && !startsWith(github.ref_name, 'renovate/') && !startsWith(github.ref_name, 'whitesource/') }}
+    runs-on: ubuntu-latest
+    outputs:
+      pr_num: ${{ steps.resolve.outputs.pr_num }}
+      pr_url: ${{ steps.resolve.outputs.pr_url }}
+    steps:
+      - id: resolve
+        run: |
+          set -euo pipefail
+          PR_NUM="$(gh pr list --head "$HEAD_SELECTOR" --state open --json number --jq '.[0].number // ""')"
+          PR_URL="$(gh pr list --head "$HEAD_SELECTOR" --state open --json url --jq '.[0].url // ""')"
+          echo "pr_num=$PR_NUM" >> "$GITHUB_OUTPUT"
+          echo "pr_url=$PR_URL" >> "$GITHUB_OUTPUT"
+        env:
+          HEAD_SELECTOR: ${{ github.repository_owner }}:${{ github.ref_name }}
+          GH_TOKEN: ${{ github.token }}
 
   extractnum:
-    needs: pull-request
-    if: ${{ inputs.enable_auto_add_pr == 'true' && inputs.enable_link_or_create_redmine_from_branch == 'true' && needs.pull-request.outputs.pr_url && needs.pull-request.outputs.pr_created == 'true' }}
+    needs: [pull-request, resolve-existing-pull-request]
+    if: ${{ always() && inputs.enable_link_or_create_redmine_from_branch == 'true' && needs.resolve-existing-pull-request.result == 'success' && (needs.resolve-existing-pull-request.outputs.pr_url != '' || (needs.pull-request.result == 'success' && needs.pull-request.outputs.pr_url != '')) }}
     runs-on: ubuntu-latest
     outputs:
       issue: ${{ steps.extract.outputs.replaced }}
@@ -204,25 +224,25 @@ jobs:
           replace-with: "$2"
 
   link-to-redmine:
-    needs: [extractnum, pull-request]
-    if: ${{ inputs.enable_auto_add_pr == 'true' && inputs.enable_link_or_create_redmine_from_branch == 'true' && needs.pull-request.outputs.pr_url && needs.pull-request.outputs.pr_created == 'true' && needs.extractnum.outputs.issue != github.ref_name }}
+    needs: [extractnum, pull-request, resolve-existing-pull-request]
+    if: ${{ always() && inputs.enable_link_or_create_redmine_from_branch == 'true' && needs.extractnum.result == 'success' && (needs.pull-request.outputs.pr_url != '' || needs.resolve-existing-pull-request.outputs.pr_url != '') && needs.extractnum.outputs.issue != github.ref_name }}
     uses: pangaeatech/.github/.github/workflows/link-to-redmine.yml@main
     with:
-      pr_num: ${{ needs.pull-request.outputs.pr_num }}
-      pr_url: ${{ needs.pull-request.outputs.pr_url }}
+      pr_num: ${{ needs.pull-request.outputs.pr_num || needs.resolve-existing-pull-request.outputs.pr_num }}
+      pr_url: ${{ needs.pull-request.outputs.pr_url || needs.resolve-existing-pull-request.outputs.pr_url }}
       rm_issue: ${{ needs.extractnum.outputs.issue }}
       rm_url: ${{ inputs.rm_url }}
       rm_field_id: ${{ inputs.rm_field_id }}
     secrets:
-      rm_key: ${{ secrets.rm_key || '' }}
+      rm_key: ${{ secrets.rm_key }}
 
   add-to-redmine:
-    needs: [extractnum, pull-request]
-    if: ${{ inputs.enable_auto_add_pr == 'true' && inputs.enable_link_or_create_redmine_from_branch == 'true' && needs.pull-request.outputs.pr_url && needs.pull-request.outputs.pr_created == 'true' && needs.extractnum.outputs.issue == github.ref_name }}
+    needs: [extractnum, pull-request, resolve-existing-pull-request]
+    if: ${{ always() && inputs.enable_link_or_create_redmine_from_branch == 'true' && needs.extractnum.result == 'success' && (needs.pull-request.outputs.pr_url != '' || needs.resolve-existing-pull-request.outputs.pr_url != '') && needs.extractnum.outputs.issue == github.ref_name }}
     uses: pangaeatech/.github/.github/workflows/add-to-redmine.yml@main
     with:
-      pr_num: ${{ needs.pull-request.outputs.pr_num }}
-      pr_url: ${{ needs.pull-request.outputs.pr_url }}
+      pr_num: ${{ needs.pull-request.outputs.pr_num || needs.resolve-existing-pull-request.outputs.pr_num }}
+      pr_url: ${{ needs.pull-request.outputs.pr_url || needs.resolve-existing-pull-request.outputs.pr_url }}
       pr_subject: ${{ github.ref_name }}
       rm_url: ${{ inputs.rm_url }}
       rm_project_id: ${{ inputs.rm_project_id }}
@@ -230,4 +250,4 @@ jobs:
       rm_tracker_id: ${{ inputs.rm_tracker_id }}
       rm_version_id: ${{ inputs.rm_version_id }}
     secrets:
-      rm_key: ${{ secrets.rm_key || '' }}
+      rm_key: ${{ secrets.rm_key }}
