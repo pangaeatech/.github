@@ -46,12 +46,16 @@ jobs:
 
       - id: open-pr
         run: |
-          gh pr view > /dev/null && echo "pr_created=false" >> $GITHUB_OUTPUT || {
+          set -euo pipefail
+          if gh pr view > /dev/null 2>&1; then
+            PR_CREATED="false"
+          else
             gh pr create -d -B "$BASE_BRANCH" -t "$PR_TITLE" -b ""
-            echo "pr_created=true" >> $GITHUB_OUTPUT
-          }
-          echo "pr_number=$(gh pr view --json number -q .number || echo "")" >> $GITHUB_OUTPUT
-          echo "pr_url=$(gh pr view --json url -q .url || echo "")" >> $GITHUB_OUTPUT
+            PR_CREATED="true"
+          fi
+          echo "pr_created=$PR_CREATED" >> "$GITHUB_OUTPUT"
+          echo "pr_number=$(gh pr view --json number -q .number)" >> "$GITHUB_OUTPUT"
+          echo "pr_url=$(gh pr view --json url -q .url)" >> "$GITHUB_OUTPUT"
         env:
           BASE_BRANCH: ${{ inputs.base_branch || 'main' }}
           PR_TITLE: ${{ inputs.pr_title || github.ref_name }}
