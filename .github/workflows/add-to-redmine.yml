@@ -34,58 +34,88 @@ on:
     inputs:
       pr_num:
         # The Pull Request Number
-        required: true
+        required: false
         type: string
       pr_url:
         # The Pull Request URL
-        required: true
+        required: false
         type: string
       pr_subject:
         # The Pull Request Subject
-        required: true
+        required: false
         type: string
       pr_body:
         # The Pull Request Description (optional)
         required: false
         type: string
+        default: ""
       rm_url:
         # The Redmine URL
-        required: true
+        required: false
         type: string
+        default: "https://redmine.pangaeatech.com/"
       rm_project_id:
         # The Project's unique id
-        required: true
+        required: false
         type: string
+        default: "project-id"
       rm_tracker_id:
         # The redmine tracker ID to create the issue in (optional)
         required: false
         type: number
+        default: 29
       rm_version_id:
         # The redmine milestone ID to create the issue in (optional)
         required: false
         type: number
+        default: 123
       rm_field_id:
         # The redmine custom field ID to store the PR number in (optional)
         required: false
         type: number
+        default: 11
       draft_prefix:
         # If the Pull Request has this prefix (case insensitive), then it will be set to Draft upon being added successfully to Redmine (optional - defaults to "WIP " if not specified).
         required: false
         type: string
+        default: "WIP "
     secrets:
       rm_key:
         # The REST API Key of the redmine user to post the issue as
         # NOTE: This user MUST have permission to "Add issues" to the
         #       project specified by rm_project_id
-        required: true
+        required: false
 jobs:
   annotate:
     runs-on: ubuntu-latest
     steps:
+      - name: Validate Redmine API key
+        run: |
+          if [ -z "$RM_KEY" ]; then
+            echo "::error::Missing required secret rm_key"
+            exit 1
+          fi
+        env:
+          RM_KEY: ${{ secrets.rm_key }}
+
+      - name: Validate PR number
+        run: |
+          if [ -z "$PR_NUM" ]; then
+            echo "::error::Unable to resolve pr_num input or event pull request number"
+            exit 1
+          fi
+          if [ -z "$PR_URL" ]; then
+            echo "::error::Unable to resolve pr_url input or event pull request URL"
+            exit 1
+          fi
+        env:
+          PR_URL: ${{ inputs.pr_url || github.event.pull_request.html_url }}
+          PR_NUM: ${{ inputs.pr_num || github.event.pull_request.number || github.event.issue.number }}
+
       - name: Add task to redmine
         run: |
           sudo apt-get install -y jq curl pandoc
-          SUBJ=$(echo "$PR_SUBJECT" | sed -e "s/^$PREFIX//i")
+          SUBJ="$(printf '%s' "$PR_SUBJECT" | perl -pe 's/^\\Q$ENV{PREFIX}\\E//i')"
           BODY=$(echo "Linked to [Pull Request $PR_NUM]($PR_URL)
 
              $PR_BODY" | pandoc -f gfm -t html | pandoc -f html -t textile | LC_ALL=UTF-8 sed -e 's/<tt>/<code>/g' -e 's/<\/tt>/<\/code>/g' -e 's/<hr *\/>/----/g' -e "s/[\xF0-\xF7].../�/g");
@@ -108,27 +138,31 @@ jobs:
           gh pr comment "$PR_URL" -b "Added as [Redmine Task $TaskId]($RM_URL/issues/$TaskId)";
           fi;
         env:
-          PR_URL: ${{ inputs.pr_url }}
-          PR_NUM: ${{ Inputs.pr_num }}
-          PR_SUBJECT: ${{ inputs.pr_subject }}
-          PR_BODY: ${{ inputs.pr_body }}
+          PR_URL: ${{ inputs.pr_url || github.event.pull_request.html_url }}
+          PR_NUM: ${{ inputs.pr_num || github.event.pull_request.number || github.event.issue.number }}
+          PR_SUBJECT: ${{ inputs.pr_subject || github.event.pull_request.title || 'Pull Request' }}
+          PR_BODY: ${{ inputs.pr_body || github.event.pull_request.body || '' }}
           RM_PROJECT_ID: ${{ inputs.rm_project_id }}
           RM_TRACKER_ID: ${{ inputs.rm_tracker_id }}
           RM_VERSION_ID: ${{ inputs.rm_version_id }}
           RM_FIELD_ID: ${{ inputs.rm_field_id }}
           RM_URL: ${{ inputs.rm_url }}
-          RM_KEY: ${{ secrets.rm_key }}
+          RM_KEY: ${{ secrets.rm_key || '' }}
           PREFIX: "${{ inputs.draft_prefix || 'WIP ' }}"
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set PR to draft and update subject
-        if: startsWith(inputs.pr_subject, inputs.draft_prefix || 'WIP ')
         run: |
+          if [[ "${SUBJECT_NORM}" != "${PREFIX_NORM}"* ]]; then
+            exit 0
+          fi
           gh pr ready "$PR_URL" --undo
-          SUBJ=$(echo "$SUBJECT" | sed -e "s/^$PREFIX//i")
+          SUBJ="$(printf '%s' "$SUBJECT" | perl -pe 's/^\\Q$ENV{PREFIX}\\E//i')"
           gh pr edit "$PR_URL" --title "$SUBJ"
         env:
-          PR_URL: ${{ inputs.pr_url }}
-          SUBJECT: "${{ inputs.pr_subject }}"
+          PR_URL: ${{ inputs.pr_url || github.event.pull_request.html_url }}
+          SUBJECT: "${{ inputs.pr_subject || github.event.pull_request.title || 'Pull Request' }}"
           PREFIX: "${{ inputs.draft_prefix || 'WIP ' }}"
+          SUBJECT_NORM: "${{ toLower(inputs.pr_subject || github.event.pull_request.title || 'Pull Request') }}"
+          PREFIX_NORM: "${{ toLower(inputs.draft_prefix || 'WIP ') }}"
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

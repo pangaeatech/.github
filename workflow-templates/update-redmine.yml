@@ -12,6 +12,11 @@ on:
 permissions:
   contents: read
 
+env:
+  REDMINE_URL: "https://redmine.mycompany.com/" # Set to your URL
+  REDMINE_PROJECT_ID: "projectid" # Set to your project id
+  REDMINE_FIELD_ID: 11 # Set to your field id
+
 jobs:
   add-comment:
     if: ${{ github.event_name == 'issue_comment' && github.event.issue.pull_request }}
@@ -22,9 +27,9 @@ jobs:
       cmt_user: ${{github.event.comment.user.login}}
       cmt_action: "Commented on the PR:"
       cmt_body: ${{github.event.comment.body}}
-      rm_url: "https://redmine.mycompany.com/" # Set to your URL
-      rm_project_id: "projectid" # Set to your project id
-      rm_field_id: 11 # Set to your field id
+      rm_url: ${{ env.REDMINE_URL }}
+      rm_project_id: ${{ env.REDMINE_PROJECT_ID }}
+      rm_field_id: ${{ env.REDMINE_FIELD_ID }}
     secrets:
       rm_key: ${{ secrets.REDMINE_API_KEY }}
 
@@ -37,9 +42,9 @@ jobs:
       cmt_user: ${{github.event.comment.user.login}}
       cmt_action: "Added a Review Comment to the PR:"
       cmt_body: ${{github.event.comment.body}}
-      rm_url: "https://redmine.mycompany.com/" # Set to your URL
-      rm_project_id: "projectid" # Set to your project id
-      rm_field_id: 11 # Set to your field id
+      rm_url: ${{ env.REDMINE_URL }}
+      rm_project_id: ${{ env.REDMINE_PROJECT_ID }}
+      rm_field_id: ${{ env.REDMINE_FIELD_ID }}
     secrets:
       rm_key: ${{ secrets.REDMINE_API_KEY }}
 
@@ -52,9 +57,9 @@ jobs:
       cmt_user: ${{github.event.review.user.login}}
       cmt_action: "Reviewed the PR as: **${{github.event.review.state}}**"
       cmt_body: ${{github.event.review.body}}
-      rm_url: "https://redmine.mycompany.com/" # Set to your URL
-      rm_project_id: "projectid" # Set to your project id
-      rm_field_id: 11 # Set to your field id
+      rm_url: ${{ env.REDMINE_URL }}
+      rm_project_id: ${{ env.REDMINE_PROJECT_ID }}
+      rm_field_id: ${{ env.REDMINE_FIELD_ID }}
     secrets:
       rm_key: ${{ secrets.REDMINE_API_KEY }}
 
@@ -66,9 +71,9 @@ jobs:
       cmt_url: ${{github.event.pull_request.html_url}}
       cmt_user: ${{github.event.sender.login}}
       cmt_action: "Set the PR to: **${{github.event.action}}**"
-      rm_url: "https://redmine.mycompany.com/" # Set to your URL
-      rm_project_id: "projectid" # Set to your project id
-      rm_field_id: 11 # Set to your field id
+      rm_url: ${{ env.REDMINE_URL }}
+      rm_project_id: ${{ env.REDMINE_PROJECT_ID }}
+      rm_field_id: ${{ env.REDMINE_FIELD_ID }}
     secrets:
       rm_key: ${{ secrets.REDMINE_API_KEY }}
 
@@ -80,22 +85,22 @@ jobs:
       cmt_url: ${{github.event.pull_request.html_url}}
       cmt_user: ${{github.event.sender.login}}
       cmt_action: "Set the PR to: **merged**"
-      rm_url: "https://redmine.mycompany.com/" # Set to your URL
-      rm_project_id: "projectid" # Set to your project id
-      rm_field_id: 11 # Set to your field id
+      rm_url: ${{ env.REDMINE_URL }}
+      rm_project_id: ${{ env.REDMINE_PROJECT_ID }}
+      rm_field_id: ${{ env.REDMINE_FIELD_ID }}
     secrets:
       rm_key: ${{ secrets.REDMINE_API_KEY }}
 
   update-issue:
-    if: ${{ github.event_name == 'pull_request' && github.event.action == 'edited' && (github.event.pull_request.user.login == 'dependabot[bot]' || github.event.pull_request.user.login == 'renovate[bot]' || github.event.pull_request.user.login == 'mend-bolt-for-github[bot]') }}
+    if: ${{ github.event_name == 'pull_request' && github.event.action == 'edited' && contains(fromJSON('["dependabot[bot]","renovate[bot]","mend-bolt-for-github[bot]"]'), github.event.pull_request.user.login) }}
     uses: pangaeatech/.github/.github/workflows/edit-redmine.yml@main
     with:
       pr_num: ${{github.event.pull_request.number}}
       pr_url: ${{github.event.pull_request.html_url}}
       pr_subject: ${{github.event.pull_request.title}}
       pr_body: ${{github.event.pull_request.body}}
-      rm_url: "https://redmine.mycompany.com/" # Set to your URL
-      rm_project_id: "projectid" # Set to your project id
-      rm_field_id: 11 # Set to your field id
+      rm_url: ${{ env.REDMINE_URL }}
+      rm_project_id: ${{ env.REDMINE_PROJECT_ID }}
+      rm_field_id: ${{ env.REDMINE_FIELD_ID }}
     secrets:
       rm_key: ${{ secrets.REDMINE_API_KEY }}
