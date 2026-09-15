@@ -100,4 +100,4 @@ For minimizing repetition **both within and across many repositories**, the best
 4. **If your GitHub plan supports it, layer on required workflows (Option 4)** for centrally enforced checks.
 5. **If required workflows are not sufficient/available, add sync automation (Option 5)** to propagate local trigger-wrapper changes.
 
-This combination gives the lowest long-term maintenance burden while staying compatible with GitHub’s current lack of true GitLab-style remote include.
+This combination gives a low long-term maintenance burden while avoiding reliance on GitLab-style remote include semantics.
