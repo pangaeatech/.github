@@ -1,0 +1,200 @@
+name: Shared Workflows Meta Template
+concurrency: auto-pr-${{ github.ref }}
+on:
+  push:
+    branches-ignore:
+      - $default-branch
+      - "dependabot/**"
+      - "renovate/**"
+      - "whitesource/**"
+  pull_request:
+    types: [opened, synchronize, reopened, closed, converted_to_draft, ready_for_review, review_requested, edited]
+  issue_comment:
+    types: [created]
+  pull_request_review_comment:
+    types: [created]
+  pull_request_review:
+    types: [submitted]
+
+permissions:
+  contents: write
+  pull-requests: write
+  repository-projects: read
+  actions: read
+  statuses: read
+  checks: read
+
+env:
+  DEFAULT_BRANCH: $default-branch
+  REDMINE_URL: "https://redmine.mycompany.com/" # Set to your URL
+  REDMINE_PROJECT_ID: "projectid" # Set to your project id
+  REDMINE_FIELD_ID: 11 # Set to your field id
+  REDMINE_TRACKER_ID: 13 # Set to your tracker id (optional)
+  REDMINE_VERSION_ID: 10 # Set to your version id (optional)
+  ENABLE_ANNOTATE_NPM_DEPENDENCIES: "true" # Set to "false" to disable
+  ENABLE_ADD_BOT_PRS_TO_REDMINE: "true" # Set to "false" to disable
+  ENABLE_UPDATE_REDMINE_ACTIVITY: "true" # Set to "false" to disable
+  ENABLE_AUTO_ADD_PR: "true" # Set to "false" to disable
+  ENABLE_LINK_OR_CREATE_REDMINE_FROM_BRANCH: "true" # Set to "false" to disable
+
+jobs:
+  annotate-npm-dependencies:
+    if: ${{ env.ENABLE_ANNOTATE_NPM_DEPENDENCIES == 'true' && github.event_name == 'pull_request' && github.event.pull_request.user.login == 'dependabot[bot]' }}
+    uses: pangaeatech/.github/.github/workflows/annotate-npm-dependencies.yml@main
+    with:
+      pr_url: ${{github.event.pull_request.html_url}}
+      branch: ${{github.head_ref}}
+
+  add-bot-pr-to-redmine:
+    if: ${{ env.ENABLE_ADD_BOT_PRS_TO_REDMINE == 'true' && github.event_name == 'pull_request' && contains(fromJSON('["dependabot[bot]","renovate[bot]","mend-bolt-for-github[bot]"]'), github.event.pull_request.user.login) }}
+    uses: pangaeatech/.github/.github/workflows/add-to-redmine.yml@main
+    with:
+      pr_num: ${{github.event.pull_request.number}}
+      pr_url: ${{github.event.pull_request.html_url}}
+      pr_subject: ${{github.event.pull_request.title}}
+      pr_body: ${{github.event.pull_request.body}}
+      rm_url: ${{ env.REDMINE_URL }}
+      rm_project_id: ${{ env.REDMINE_PROJECT_ID }}
+      rm_tracker_id: ${{ env.REDMINE_TRACKER_ID }}
+      rm_version_id: ${{ env.REDMINE_VERSION_ID }}
+      rm_field_id: ${{ env.REDMINE_FIELD_ID }}
+    secrets:
+      rm_key: ${{ secrets.REDMINE_API_KEY }}
+
+  add-comment:
+    if: ${{ env.ENABLE_UPDATE_REDMINE_ACTIVITY == 'true' && github.event_name == 'issue_comment' && github.event.issue.pull_request }}
+    uses: pangaeatech/.github/.github/workflows/update-redmine.yml@main
+    with:
+      pr_num: ${{github.event.issue.number}}
+      cmt_url: ${{github.event.comment.html_url}}
+      cmt_user: ${{github.event.comment.user.login}}
+      cmt_action: "Commented on the PR:"
+      cmt_body: ${{github.event.comment.body}}
+      rm_url: ${{ env.REDMINE_URL }}
+      rm_project_id: ${{ env.REDMINE_PROJECT_ID }}
+      rm_field_id: ${{ env.REDMINE_FIELD_ID }}
+    secrets:
+      rm_key: ${{ secrets.REDMINE_API_KEY }}
+
+  add-review-comment:
+    if: ${{ env.ENABLE_UPDATE_REDMINE_ACTIVITY == 'true' && github.event_name == 'pull_request_review_comment' }}
+    uses: pangaeatech/.github/.github/workflows/update-redmine.yml@main
+    with:
+      pr_num: ${{github.event.pull_request.number}}
+      cmt_url: ${{github.event.comment.html_url}}
+      cmt_user: ${{github.event.comment.user.login}}
+      cmt_action: "Added a Review Comment to the PR:"
+      cmt_body: ${{github.event.comment.body}}
+      rm_url: ${{ env.REDMINE_URL }}
+      rm_project_id: ${{ env.REDMINE_PROJECT_ID }}
+      rm_field_id: ${{ env.REDMINE_FIELD_ID }}
+    secrets:
+      rm_key: ${{ secrets.REDMINE_API_KEY }}
+
+  add-review:
+    if: ${{ env.ENABLE_UPDATE_REDMINE_ACTIVITY == 'true' && github.event_name == 'pull_request_review' }}
+    uses: pangaeatech/.github/.github/workflows/update-redmine.yml@main
+    with:
+      pr_num: ${{github.event.pull_request.number}}
+      cmt_url: ${{github.event.review.html_url}}
+      cmt_user: ${{github.event.review.user.login}}
+      cmt_action: "Reviewed the PR as: **${{github.event.review.state}}**"
+      cmt_body: ${{github.event.review.body}}
+      rm_url: ${{ env.REDMINE_URL }}
+      rm_project_id: ${{ env.REDMINE_PROJECT_ID }}
+      rm_field_id: ${{ env.REDMINE_FIELD_ID }}
+    secrets:
+      rm_key: ${{ secrets.REDMINE_API_KEY }}
+
+  add-status:
+    if: ${{ env.ENABLE_UPDATE_REDMINE_ACTIVITY == 'true' && github.event_name == 'pull_request' && (github.event.action != 'closed' || !github.event.pull_request.merged) && github.event.action != 'edited' }}
+    uses: pangaeatech/.github/.github/workflows/update-redmine.yml@main
+    with:
+      pr_num: ${{github.event.pull_request.number}}
+      cmt_url: ${{github.event.pull_request.html_url}}
+      cmt_user: ${{github.event.sender.login}}
+      cmt_action: "Set the PR to: **${{github.event.action}}**"
+      rm_url: ${{ env.REDMINE_URL }}
+      rm_project_id: ${{ env.REDMINE_PROJECT_ID }}
+      rm_field_id: ${{ env.REDMINE_FIELD_ID }}
+    secrets:
+      rm_key: ${{ secrets.REDMINE_API_KEY }}
+
+  add-merged:
+    if: ${{ env.ENABLE_UPDATE_REDMINE_ACTIVITY == 'true' && github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged }}
+    uses: pangaeatech/.github/.github/workflows/update-redmine.yml@main
+    with:
+      pr_num: ${{github.event.pull_request.number}}
+      cmt_url: ${{github.event.pull_request.html_url}}
+      cmt_user: ${{github.event.sender.login}}
+      cmt_action: "Set the PR to: **merged**"
+      rm_url: ${{ env.REDMINE_URL }}
+      rm_project_id: ${{ env.REDMINE_PROJECT_ID }}
+      rm_field_id: ${{ env.REDMINE_FIELD_ID }}
+    secrets:
+      rm_key: ${{ secrets.REDMINE_API_KEY }}
+
+  update-issue:
+    if: ${{ env.ENABLE_UPDATE_REDMINE_ACTIVITY == 'true' && github.event_name == 'pull_request' && github.event.action == 'edited' && contains(fromJSON('["dependabot[bot]","renovate[bot]","mend-bolt-for-github[bot]"]'), github.event.pull_request.user.login) }}
+    uses: pangaeatech/.github/.github/workflows/edit-redmine.yml@main
+    with:
+      pr_num: ${{github.event.pull_request.number}}
+      pr_url: ${{github.event.pull_request.html_url}}
+      pr_subject: ${{github.event.pull_request.title}}
+      pr_body: ${{github.event.pull_request.body}}
+      rm_url: ${{ env.REDMINE_URL }}
+      rm_project_id: ${{ env.REDMINE_PROJECT_ID }}
+      rm_field_id: ${{ env.REDMINE_FIELD_ID }}
+    secrets:
+      rm_key: ${{ secrets.REDMINE_API_KEY }}
+
+  pull-request:
+    if: ${{ env.ENABLE_AUTO_ADD_PR == 'true' && github.event_name == 'push' }}
+    uses: pangaeatech/.github/.github/workflows/auto-add-pr.yml@main
+    with:
+      base_branch: ${{ env.DEFAULT_BRANCH }}
+      pr_title: ${{ github.ref_name }}
+
+  extractnum:
+    needs: pull-request
+    if: ${{ env.ENABLE_AUTO_ADD_PR == 'true' && env.ENABLE_LINK_OR_CREATE_REDMINE_FROM_BRANCH == 'true' && needs.pull-request.outputs.pr_url && needs.pull-request.outputs.pr_created == 'true' }}
+    runs-on: ubuntu-latest
+    outputs:
+      issue: ${{ steps.extract.outputs.replaced }}
+    steps:
+      - id: extract
+        uses: frabert/replace-string-action@v2.5
+        with:
+          pattern: "^(task|issue|bug)(\\d+)-.*$"
+          flags: "i"
+          string: "${{ github.ref_name }}"
+          replace-with: "$2"
+
+  link-to-redmine:
+    needs: [extractnum, pull-request]
+    if: ${{ env.ENABLE_AUTO_ADD_PR == 'true' && env.ENABLE_LINK_OR_CREATE_REDMINE_FROM_BRANCH == 'true' && needs.pull-request.outputs.pr_url && needs.pull-request.outputs.pr_created == 'true' && needs.extractnum.outputs.issue != github.ref_name }}
+    uses: pangaeatech/.github/.github/workflows/link-to-redmine.yml@main
+    with:
+      pr_num: ${{ needs.pull-request.outputs.pr_num }}
+      pr_url: ${{ needs.pull-request.outputs.pr_url }}
+      rm_issue: ${{ needs.extractnum.outputs.issue }}
+      rm_url: ${{ env.REDMINE_URL }}
+      rm_field_id: ${{ env.REDMINE_FIELD_ID }}
+    secrets:
+      rm_key: ${{ secrets.REDMINE_API_KEY }}
+
+  add-to-redmine:
+    needs: [extractnum, pull-request]
+    if: ${{ env.ENABLE_AUTO_ADD_PR == 'true' && env.ENABLE_LINK_OR_CREATE_REDMINE_FROM_BRANCH == 'true' && needs.pull-request.outputs.pr_url && needs.pull-request.outputs.pr_created == 'true' && needs.extractnum.outputs.issue == github.ref_name }}
+    uses: pangaeatech/.github/.github/workflows/add-to-redmine.yml@main
+    with:
+      pr_num: ${{ needs.pull-request.outputs.pr_num }}
+      pr_url: ${{ needs.pull-request.outputs.pr_url }}
+      pr_subject: ${{ github.ref_name }}
+      rm_url: ${{ env.REDMINE_URL }}
+      rm_project_id: ${{ env.REDMINE_PROJECT_ID }}
+      rm_field_id: ${{ env.REDMINE_FIELD_ID }}
+      rm_tracker_id: ${{ env.REDMINE_TRACKER_ID }}
+      rm_version_id: ${{ env.REDMINE_VERSION_ID }}
+    secrets:
+      rm_key: ${{ secrets.REDMINE_API_KEY }}

@@ -7,6 +7,26 @@ on:
       - "dependabot/**"
       - "renovate/**"
       - "whitesource/**"
+  workflow_call:
+    inputs:
+      base_branch:
+        description: The branch to open the pull request against
+        required: false
+        type: string
+      pr_title:
+        description: The pull request title
+        required: false
+        type: string
+    outputs:
+      pr_url:
+        description: URL of the pull request for the current branch
+        value: ${{ jobs.pull-request.outputs.pr_url }}
+      pr_num:
+        description: Number of the pull request for the current branch
+        value: ${{ jobs.pull-request.outputs.pr_num }}
+      pr_created:
+        description: True when this run created the pull request
+        value: ${{ jobs.pull-request.outputs.pr_created }}
 
 permissions:
   contents: read
@@ -17,9 +37,22 @@ permissions:
 jobs:
   pull-request:
     runs-on: ubuntu-latest
+    outputs:
+      pr_url: ${{ steps.open-pr.outputs.pr_url }}
+      pr_num: ${{ steps.open-pr.outputs.pr_number }}
+      pr_created: ${{ steps.open-pr.outputs.pr_created }}
     steps:
       - uses: actions/checkout@v7
 
-      - run: gh pr view || gh pr create -B "main" -t "${{ github.ref_name }}" -b ""
+      - id: open-pr
+        run: |
+          gh pr view > /dev/null && echo "pr_created=false" >> $GITHUB_OUTPUT || {
+            gh pr create -d -B "$BASE_BRANCH" -t "$PR_TITLE" -b ""
+            echo "pr_created=true" >> $GITHUB_OUTPUT
+          }
+          echo "pr_number=$(gh pr view --json number -q .number || echo "")" >> $GITHUB_OUTPUT
+          echo "pr_url=$(gh pr view --json url -q .url || echo "")" >> $GITHUB_OUTPUT
         env:
+          BASE_BRANCH: ${{ inputs.base_branch || 'main' }}
+          PR_TITLE: ${{ inputs.pr_title || github.ref_name }}
           GH_TOKEN: ${{ github.token }}

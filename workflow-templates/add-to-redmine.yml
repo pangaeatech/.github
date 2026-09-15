@@ -8,19 +8,26 @@ permissions:
   pull-requests: write
   repository-projects: read
 
+env:
+  REDMINE_URL: "https://redmine.mycompany.com/" # Set to your URL
+  REDMINE_PROJECT_ID: "projectid" # Set to your project id
+  REDMINE_TRACKER_ID: 13 # Set to your tracker id (optional)
+  REDMINE_VERSION_ID: 10 # Set to your version id (optional)
+  REDMINE_FIELD_ID: 11 # Set to your field id (optional)
+
 jobs:
   add-to-redmine:
-    if: ${{ github.event.pull_request.user.login == 'dependabot[bot]' || github.event.pull_request.user.login == 'renovate[bot]' || github.event.pull_request.user.login == 'mend-bolt-for-github[bot]' }}
+    if: ${{ contains(fromJSON('["dependabot[bot]","renovate[bot]","mend-bolt-for-github[bot]"]'), github.event.pull_request.user.login) }}
     uses: pangaeatech/.github/.github/workflows/add-to-redmine.yml@main
     with:
       pr_num: ${{github.event.pull_request.number}}
       pr_url: ${{github.event.pull_request.html_url}}
       pr_subject: ${{github.event.pull_request.title}}
       pr_body: ${{github.event.pull_request.body}}
-      rm_url: "https://redmine.mycompany.com/" # Set to your URL
-      rm_project_id: "projectid" # Set to your project id
-      rm_tracker_id: 13 # Set to your tracker id (optional)
-      rm_version_id: 10 # Set to your version id (optional)
-      rm_field_id: 11 # Set to your field id (optional)
+      rm_url: ${{ env.REDMINE_URL }}
+      rm_project_id: ${{ env.REDMINE_PROJECT_ID }}
+      rm_tracker_id: ${{ env.REDMINE_TRACKER_ID }}
+      rm_version_id: ${{ env.REDMINE_VERSION_ID }}
+      rm_field_id: ${{ env.REDMINE_FIELD_ID }}
     secrets:
       rm_key: ${{ secrets.REDMINE_API_KEY }}
