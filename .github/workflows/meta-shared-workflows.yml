@@ -14,9 +14,8 @@ on:
         default: "https://redmine.pangaeatech.com/"
       rm_project_id:
         description: Redmine project identifier
-        required: false
+        required: true
         type: string
-        default: "project-id"
       rm_field_id:
         description: Redmine custom field id containing PR number
         required: false
@@ -29,9 +28,8 @@ on:
         default: 29
       rm_version_id:
         description: Redmine version id
-        required: false
+        required: true
         type: number
-        default: 123
       enable_annotate_npm_dependencies:
         description: Enable dependabot npm dependency annotation
         required: false
@@ -60,7 +58,7 @@ on:
     secrets:
       rm_key:
         description: Redmine API key
-        required: false
+        required: true
 
 permissions:
   contents: write

@@ -28,38 +28,34 @@ on:
   workflow_call:
     inputs:
       pr_num:
-        # The Pull Request Number
+        # The Pull Request Number (optional - if not specified, will be taken from the event payload)
         required: false
         type: string
       rm_url:
         # The Redmine URL
-        required: false
+        required: true
         type: string
-        default: "https://redmine.pangaeatech.com/"
       rm_project_id:
         # The Project's unique id
-        required: false
+        required: true
         type: string
-        default: "project-id"
       rm_field_id:
         # The redmine custom field ID which stores the PR number
         # NOTE: This field must have "Used as a Filter" enabled in Redmine
-        required: false
+        required: true
         type: number
-        default: 11
       cmt_url:
-        # The Comment's URL
+        # The Comment's URL (optional - if not specified, will be taken from the event payload)
         required: false
         type: string
       cmt_user:
-        # The user who added the comment
+        # The user who added the comment (optional - if not specified, will be taken from the event payload)
         required: false
         type: string
       cmt_body:
-        # The Comment's Body
+        # The Comment's Body (optional - if not specified, will be taken from the event payload)
         required: false
         type: string
-        default: ""
       cmt_action:
         # The Comment's action ("approved", "commented", "merged", etc - supports markdown)
         # Defaults to "commented" if not specified
@@ -71,34 +67,11 @@ on:
         # The REST API Key of the redmine user to post as
         # NOTE: This user MUST have permission to "Add notes" on the
         #       project specified by rm_project_id
-        required: false
+        required: true
 jobs:
   annotate:
     runs-on: ubuntu-latest
     steps:
-      - name: Validate Redmine API key
-        run: |
-          if [ -z "$RM_KEY" ]; then
-            echo "::error::Missing required secret rm_key"
-            exit 1
-          fi
-        env:
-          RM_KEY: ${{ secrets.rm_key }}
-
-      - name: Validate PR number
-        run: |
-          if [ -z "$PR_NUM" ]; then
-            echo "::error::Unable to resolve pr_num input or event pull request number"
-            exit 1
-          fi
-          if [ -z "$CMT_URL" ]; then
-            echo "::error::Unable to resolve cmt_url input or event comment/review URL"
-            exit 1
-          fi
-        env:
-          PR_NUM: ${{ inputs.pr_num || github.event.pull_request.number || github.event.issue.number }}
-          CMT_URL: ${{ inputs.cmt_url || github.event.comment.html_url || github.event.review.html_url || github.event.pull_request.html_url }}
-
       - name: Update task in Redmine
         run: |
           sudo apt-get install -y jq curl pandoc

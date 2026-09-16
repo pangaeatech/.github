@@ -41,65 +41,35 @@ on:
   workflow_call:
     inputs:
       pr_num:
-        # The Pull Request Number
+        # The Pull Request Number (optional - if not specified, will be taken from the event payload)
         required: false
         type: string
       pr_url:
-        # The Pull Request URL
+        # The Pull Request URL (optional - if not specified, will be taken from the event payload)
         required: false
         type: string
       rm_url:
         # The Redmine URL
-        required: false
+        required: true
         type: string
-        default: "https://redmine.pangaeatech.com/"
       rm_issue:
         # The redmine issue to link to
-        required: false
+        required: true
         type: string
       rm_field_id:
         # The redmine custom field ID to store the PR number in
-        required: false
+        required: true
         type: number
-        default: 11
     secrets:
       rm_key:
         # The REST API Key of the redmine user to post as
         # NOTE: This user MUST have permission to "Edit issues" and also
         #       to "Add notes" on the project specified by rm_project_id
-        required: false
+        required: true
 jobs:
   annotate:
     runs-on: ubuntu-latest
     steps:
-      - name: Validate Redmine API key
-        run: |
-          if [ -z "$RM_KEY" ]; then
-            echo "::error::Missing required secret rm_key"
-            exit 1
-          fi
-        env:
-          RM_KEY: ${{ secrets.rm_key }}
-
-      - name: Validate required runtime values
-        run: |
-          if [ -z "$PR_NUM" ]; then
-            echo "::error::Unable to resolve pr_num input or event pull request number"
-            exit 1
-          fi
-          if [ -z "$PR_URL" ]; then
-            echo "::error::Unable to resolve pr_url input or event pull request URL"
-            exit 1
-          fi
-          if [ -z "$RM_ISSUE" ]; then
-            echo "::error::Missing rm_issue input"
-            exit 1
-          fi
-        env:
-          PR_URL: ${{ inputs.pr_url || github.event.pull_request.html_url }}
-          PR_NUM: ${{ inputs.pr_num || github.event.pull_request.number || github.event.issue.number }}
-          RM_ISSUE: ${{ inputs.rm_issue }}
-
       - name: Link task to redmine
         run: |
           sudo apt-get install -y jq curl

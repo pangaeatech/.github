@@ -29,80 +29,52 @@ on:
   workflow_call:
     inputs:
       pr_num:
-        # The Pull Request Number
+        # The Pull Request Number (optional - if not specified, will be taken from the event payload)
         required: false
         type: string
       pr_url:
-        # The Pull Request URL
+        # The Pull Request URL (optional - if not specified, will be taken from the event payload)
         required: false
         type: string
       pr_subject:
-        # The Pull Request Subject
+        # The Pull Request Subject (optional - if not specified, will be taken from the event payload)
         required: false
         type: string
       pr_body:
-        # The Pull Request Description (optional)
+        # The Pull Request Description (optional - if not specified, will be taken from the event payload)
         required: false
         type: string
-        default: ""
       rm_url:
         # The Redmine URL
-        required: false
+        required: true
         type: string
-        default: "https://redmine.pangaeatech.com/"
       rm_project_id:
         # The Project's unique id
-        required: false
+        required: true
         type: string
-        default: "project-id"
       rm_field_id:
         # The redmine custom field ID which stores the PR number
         # NOTE: This field must have "Used as a Filter" enabled in Redmine
-        required: false
+        required: true
         type: number
-        default: 11
       draft_prefix:
         # If the Pull Request has this prefix (case insensitive), then it will be set to Draft upon being added successfully to Redmine (optional - defaults to "WIP " if not specified).
         required: false
         type: string
-        default: "WIP "
     secrets:
       rm_key:
         # The REST API Key of the redmine user to post as
         # NOTE: This user MUST have permission to "Add notes" on the
         #       project specified by rm_project_id
-        required: false
+        required: true
 jobs:
   annotate:
     runs-on: ubuntu-latest
     steps:
-      - name: Validate Redmine API key
-        run: |
-          if [ -z "$RM_KEY" ]; then
-            echo "::error::Missing required secret rm_key"
-            exit 1
-          fi
-        env:
-          RM_KEY: ${{ secrets.rm_key }}
-
-      - name: Validate PR number
-        run: |
-          if [ -z "$PR_NUM" ]; then
-            echo "::error::Unable to resolve pr_num input or event pull request number"
-            exit 1
-          fi
-          if [ -z "$PR_URL" ]; then
-            echo "::error::Unable to resolve pr_url input or event pull request URL"
-            exit 1
-          fi
-        env:
-          PR_URL: ${{ inputs.pr_url || github.event.pull_request.html_url }}
-          PR_NUM: ${{ inputs.pr_num || github.event.pull_request.number || github.event.issue.number }}
-
       - name: Update task in Redmine
         run: |
           sudo apt-get install -y jq curl pandoc
-          SUBJ="$(printf '%s' "$PR_SUBJECT" | perl -pe 's/^\\Q$ENV{PREFIX}\\E//i')"
+          SUBJ=$(echo "$PR_SUBJECT" | sed -e "s/^$PREFIX//i")
           BODY=$(echo "Linked to [Pull Request $PR_NUM]($PR_URL)
 
              $PR_BODY" | pandoc -f gfm -t html | pandoc -f html -t textile | LC_ALL=UTF-8 sed -e 's/<tt>/<code>/g' -e 's/<\/tt>/<\/code>/g' -e 's/<hr *\/>/----/g' -e "s/[\xF0-\xF7].../�/g");

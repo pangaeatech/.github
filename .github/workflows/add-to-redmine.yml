@@ -33,85 +33,55 @@ on:
   workflow_call:
     inputs:
       pr_num:
-        # The Pull Request Number
+        # The Pull Request Number (optional - if not specified, will be taken from the event payload)
         required: false
         type: string
       pr_url:
-        # The Pull Request URL
+        # The Pull Request URL (optional - if not specified, will be taken from the event payload)
         required: false
         type: string
       pr_subject:
-        # The Pull Request Subject
+        # The Pull Request Subject (optional - if not specified, will be taken from the event payload)
         required: false
         type: string
       pr_body:
-        # The Pull Request Description (optional)
+        # The Pull Request Description (optional - if not specified, will be taken from the event payload)
         required: false
         type: string
-        default: ""
       rm_url:
         # The Redmine URL
-        required: false
+        required: true
         type: string
-        default: "https://redmine.pangaeatech.com/"
       rm_project_id:
         # The Project's unique id
-        required: false
+        required: true
         type: string
-        default: "project-id"
       rm_tracker_id:
         # The redmine tracker ID to create the issue in (optional)
         required: false
         type: number
-        default: 29
       rm_version_id:
         # The redmine milestone ID to create the issue in (optional)
         required: false
         type: number
-        default: 123
       rm_field_id:
         # The redmine custom field ID to store the PR number in (optional)
         required: false
         type: number
-        default: 11
       draft_prefix:
         # If the Pull Request has this prefix (case insensitive), then it will be set to Draft upon being added successfully to Redmine (optional - defaults to "WIP " if not specified).
         required: false
         type: string
-        default: "WIP "
     secrets:
       rm_key:
         # The REST API Key of the redmine user to post the issue as
         # NOTE: This user MUST have permission to "Add issues" to the
         #       project specified by rm_project_id
-        required: false
+        required: true
 jobs:
   annotate:
     runs-on: ubuntu-latest
     steps:
-      - name: Validate Redmine API key
-        run: |
-          if [ -z "$RM_KEY" ]; then
-            echo "::error::Missing required secret rm_key"
-            exit 1
-          fi
-        env:
-          RM_KEY: ${{ secrets.rm_key }}
-
-      - name: Validate PR number
-        run: |
-          if [ -z "$PR_NUM" ]; then
-            echo "::error::Unable to resolve pr_num input or event pull request number"
-            exit 1
-          fi
-          if [ -z "$PR_URL" ]; then
-            echo "::error::Unable to resolve pr_url input or event pull request URL"
-            exit 1
-          fi
-        env:
-          PR_URL: ${{ inputs.pr_url || github.event.pull_request.html_url }}
-          PR_NUM: ${{ inputs.pr_num || github.event.pull_request.number || github.event.issue.number }}
-
       - name: Add task to redmine
         run: |
           sudo apt-get install -y jq curl pandoc
@@ -147,7 +117,7 @@ jobs:
           RM_VERSION_ID: ${{ inputs.rm_version_id }}
           RM_FIELD_ID: ${{ inputs.rm_field_id }}
           RM_URL: ${{ inputs.rm_url }}
-          RM_KEY: ${{ secrets.rm_key || '' }}
+          RM_KEY: ${{ secrets.rm_key }}
           PREFIX: "${{ inputs.draft_prefix || 'WIP ' }}"
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
