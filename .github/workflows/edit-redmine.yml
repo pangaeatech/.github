@@ -29,19 +29,19 @@ on:
   workflow_call:
     inputs:
       pr_num:
-        # The Pull Request Number
-        required: true
+        # The Pull Request Number (optional - if not specified, will be taken from the event payload)
+        required: false
         type: string
       pr_url:
-        # The Pull Request URL
-        required: true
+        # The Pull Request URL (optional - if not specified, will be taken from the event payload)
+        required: false
         type: string
       pr_subject:
-        # The Pull Request Subject
-        required: true
+        # The Pull Request Subject (optional - if not specified, will be taken from the event payload)
+        required: false
         type: string
       pr_body:
-        # The Pull Request Description (optional)
+        # The Pull Request Description (optional - if not specified, will be taken from the event payload)
         required: false
         type: string
       rm_url:
@@ -84,13 +84,13 @@ jobs:
           curl -s -X PUT -H "Content-Type: application/json" -d "@body.json" "${RM_URL}/issues/${RM_ISSUE}.json"
           done;
         env:
-          PR_URL: ${{ inputs.pr_url }}
-          PR_NUM: ${{ Inputs.pr_num }}
-          PR_SUBJECT: ${{ inputs.pr_subject }}
-          PR_BODY: ${{ inputs.pr_body }}
+          PR_URL: ${{ inputs.pr_url || github.event.pull_request.html_url }}
+          PR_NUM: ${{ inputs.pr_num || github.event.pull_request.number || github.event.issue.number }}
+          PR_SUBJECT: ${{ inputs.pr_subject || github.event.pull_request.title || 'Pull Request' }}
+          PR_BODY: ${{ inputs.pr_body || github.event.pull_request.body || '' }}
           RM_PROJ: ${{ inputs.rm_project_id }}
           RM_FIELD_ID: ${{ inputs.rm_field_id }}
           RM_URL: ${{ inputs.rm_url }}
-          RM_KEY: ${{ secrets.rm_key }}
+          RM_KEY: ${{ secrets.rm_key || '' }}
           PREFIX: "${{ inputs.draft_prefix || 'WIP ' }}"
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
