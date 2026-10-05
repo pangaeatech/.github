@@ -28,8 +28,8 @@ on:
   workflow_call:
     inputs:
       pr_num:
-        # The Pull Request Number
-        required: true
+        # The Pull Request Number (optional - if not specified, will be taken from the event payload)
+        required: false
         type: string
       rm_url:
         # The Redmine URL
@@ -45,15 +45,15 @@ on:
         required: true
         type: number
       cmt_url:
-        # The Comment's URL
-        required: true
+        # The Comment's URL (optional - if not specified, will be taken from the event payload)
+        required: false
         type: string
       cmt_user:
-        # The user who added the comment
-        required: true
+        # The user who added the comment (optional - if not specified, will be taken from the event payload)
+        required: false
         type: string
       cmt_body:
-        # The Comment's Body
+        # The Comment's Body (optional - if not specified, will be taken from the event payload)
         required: false
         type: string
       cmt_action:
@@ -61,6 +61,7 @@ on:
         # Defaults to "commented" if not specified
         required: false
         type: string
+        default: "commented"
     secrets:
       rm_key:
         # The REST API Key of the redmine user to post as
@@ -83,12 +84,12 @@ jobs:
           curl -s -X PUT -H "Content-Type: application/json" -d "@body.json" "${RM_URL}/issues/${RM_ISSUE}.json"
           done;
         env:
-          PR_NUM: ${{ inputs.pr_num }}
-          CMT_URL: ${{ inputs.cmt_url }}
-          CMT_USER: ${{ inputs.cmt_user }}
+          PR_NUM: ${{ inputs.pr_num || github.event.pull_request.number || github.event.issue.number }}
+          CMT_URL: ${{ inputs.cmt_url || github.event.comment.html_url || github.event.review.html_url || github.event.pull_request.html_url }}
+          CMT_USER: ${{ inputs.cmt_user || github.event.comment.user.login || github.event.review.user.login || github.event.sender.login || 'github-actions[bot]' }}
           CMT_BODY: ${{ inputs.cmt_body }}
           CMT_ACT: ${{ inputs.cmt_action || 'commented' }}
           RM_PROJ: ${{ inputs.rm_project_id }}
           RM_FIELD_ID: ${{ inputs.rm_field_id }}
           RM_URL: ${{ inputs.rm_url }}
-          RM_KEY: ${{ secrets.rm_key }}
+          RM_KEY: ${{ secrets.rm_key || '' }}
