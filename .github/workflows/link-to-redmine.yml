@@ -41,12 +41,12 @@ on:
   workflow_call:
     inputs:
       pr_num:
-        # The Pull Request Number
-        required: true
+        # The Pull Request Number (optional - if not specified, will be taken from the event payload)
+        required: false
         type: string
       pr_url:
-        # The Pull Request URL
-        required: true
+        # The Pull Request URL (optional - if not specified, will be taken from the event payload)
+        required: false
         type: string
       rm_url:
         # The Redmine URL
@@ -83,10 +83,10 @@ jobs:
           curl -s -X PUT -H "Content-Type: application/json" -d "@body.json" "${RM_URL}/issues/${RM_ISSUE}.json"
           gh pr comment "$PR_URL" -b "Linked to [Redmine Task ${RM_ISSUE}]($RM_URL/issues/${RM_ISSUE})";
         env:
-          PR_URL: ${{ inputs.pr_url }}
-          PR_NUM: ${{ inputs.pr_num }}
+          PR_URL: ${{ inputs.pr_url || github.event.pull_request.html_url }}
+          PR_NUM: ${{ inputs.pr_num || github.event.pull_request.number || github.event.issue.number }}
           RM_ISSUE: ${{ inputs.rm_issue }}
           RM_FIELD_ID: ${{ inputs.rm_field_id }}
           RM_URL: ${{ inputs.rm_url }}
-          RM_KEY: ${{ secrets.rm_key }}
+          RM_KEY: ${{ secrets.rm_key || '' }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
