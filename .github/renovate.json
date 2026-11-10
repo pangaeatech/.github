@@ -3,11 +3,21 @@
   "extends": ["github>pangaeatech/.github"],
   "baseBranchPatterns": ["main"],
   "branchPrefix": "renovate/",
-  "enabledManagers": ["npm", "nvm"],
+  "enabledManagers": ["npm", "nvm", "custom.regex", "dockerfile"],
+  "dockerfile": {
+    "managerFilePatterns": ["/(^|/).*\\.dockerfile$/"]
+  },
   "packageRules": [
     {
       "groupName": "action-validator",
       "matchPackageNames": ["@action-validator/{/,}**"]
+    },
+    {
+      "matchDatasources": ["docker"],
+      "additionalBranchPrefix": "build/",
+      "commitMessagePrefix": "[Build] ",
+      "rangeStrategy": "replace",
+      "draftPR": false
     }
   ]
 }
