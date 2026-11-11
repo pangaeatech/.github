@@ -4,7 +4,7 @@
   "license": "MIT",
   "private": "true",
   "repository": "github:pangaeatech/.github",
-  "version": "0.1.0",
+  "version": "4.0.0",
   "devDependencies": {
     "@action-validator/cli": "0.6.0",
     "@action-validator/core": "0.6.0",
@@ -16,7 +16,7 @@
   "scripts": {
     "format:check": "prettier --check .",
     "format:fix": "prettier --write .",
-    "prepare": "husky install .husky",
+    "prepare": "husky",
     "lint:actions": "run-for-every-file --src ./.github/workflows/ --file '**/*.yml' --run 'npx action-validator {{src-file}}'",
     "lint:templates": "run-for-every-file --src ./workflow-templates/ --file '**/*.yml' --run 'npx action-validator {{src-file}}'"
   }
