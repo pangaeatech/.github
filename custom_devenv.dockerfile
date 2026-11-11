@@ -5,7 +5,7 @@ ENV COPILOT_VIM_VERSION=1.59.0
 
 RUN apt-get update
 RUN apt-get install
-RUN apt-get install -y --no-install-recommends jq curl pandoc zip unzip doxygen nodejs npm git sed python3-pip python3-venv python3-dev build-essential pipx neovim wget
+RUN apt-get install -y --no-install-recommends jq curl pandoc zip unzip doxygen nodejs npm git sed python3-pip python3-venv python3-dev build-essential pipx neovim wget xdg-utils libatspi2.0-0 libsecret-1-0
 
 RUN wget https://packages.microsoft.com/config/debian/13/packages-microsoft-prod.deb -O packages-microsoft-prod.deb && \
     dpkg -i packages-microsoft-prod.deb && \
