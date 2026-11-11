@@ -1,6 +1,6 @@
 FROM dhi.io/alpine-base:3.24-dev
 
-RUN apk add -U bash curl jq pandoc zip unzip
+RUN apk add -U bash curl jq pandoc-cli zip unzip
 RUN rm -Rf /var/cache/apk/*
 
 COPY scripts/redmine_sync.sh /entrypoint.sh
