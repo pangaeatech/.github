@@ -1,7 +1,8 @@
-FROM dhi.io/alpine-base:3.24-dev
+FROM dhi.io/debian-base:trixie-debian13-dev
 
-RUN apk add -U bash curl jq pandoc-cli zip unzip
-RUN rm -Rf /var/cache/apk/*
+RUN apt-get update
+RUN apt-get install -y --no-install-recommends jq curl pandoc zip unzip
+RUN rm -Rf /var/lib/apt/lists/*
 
 COPY scripts/redmine_sync.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh

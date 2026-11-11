@@ -5,7 +5,6 @@ ENV COPILOT_VIM_VERSION=1.59.0
 
 # Install dependencies
 RUN apt-get update
-RUN apt-get install
 RUN apt-get install -y --no-install-recommends jq curl pandoc zip unzip doxygen nodejs npm git sed python3-pip python3-venv python3-dev build-essential pipx neovim wget
 
 # Install .NET SDK 10.0
