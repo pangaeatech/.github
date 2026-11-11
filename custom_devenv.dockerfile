@@ -4,8 +4,10 @@ FROM dhi.io/debian-base:trixie-debian13-dev
 ENV COPILOT_VIM_VERSION=1.59.0
 
 RUN apt-get update
-RUN apt-get install -y --no-install-recommends jq curl pandoc zip unzip dotnet10-sdk doxygen nodejs npm poetry nvim git sed python3-pip python3-venv python3-dev build-essential
+RUN apt-get install -y --no-install-recommends jq curl pandoc zip unzip doxygen nodejs npm git sed python3-pip python3-venv python3-dev build-essential dotnet-sdk-10.0 pipx neovim
 RUN rm -Rf /var/lib/apt/lists/*
+RUN pipx ensurepath
+RUN pipx install poetry
 
 # Install opencode-desktop-linux-amd64.deb from latest release at https://github.com/anomalyco/opencode/releases
 RUN curl -s https://api.github.com/repos/anomalyco/opencode/releases/latest | jq -r '.assets[] | select(.name | test("opencode-desktop-linux-amd64.deb")) | .browser_download_url' | xargs curl -L -o /tmp/opencode.deb && \
