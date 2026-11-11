@@ -4,8 +4,7 @@
   "baseBranchPatterns": ["main"],
   "branchPrefix": "renovate/",
   "configMigration": true,
-  "dependencyDashboard": true,
-  "configMigration": true,
+  "dependencyDashboard": { "enabled": true },
   "enabledManagers": ["custom.regex", "npm"],
   "branchConcurrentLimit": 0,
   "lockFileMaintenance": { "enabled": true, "schedule": ["* 5-9 * * 1"] },
@@ -297,6 +296,13 @@
       ],
       "datasourceTemplate": "nuget",
       "versioningTemplate": "nuget"
+    },
+    {
+      "customType": "regex",
+      "managerFilePatterns": ["/(^|/).*\\.dockerfile$/"],
+      "matchStrings": [
+        "# renovate: datasource=(?<datasource>[a-zA-Z0-9-._]+?) depName=(?<depName>[^\\s]+?)(?: (?:lookupName|packageName)=(?<packageName>[^\\s]+?))?(?: versioning=(?<versioning>[^\\s]+?))?(?: extractVersion=(?<extractVersion>[^\\s]+?))?\\s+ENV\\s+[A-Za-z0-9_]+?_VERSION\\s*:\\s*[\"']?(?<currentValue>.+?)[\"']?\\s"
+      ]
     }
   ]
 }

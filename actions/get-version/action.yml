@@ -1,0 +1,26 @@
+name: get-version
+description: Determine version / release / RC number for the build
+inputs:
+  version-file:
+    description: File holding the version (package.json, *.csproj, ...). Empty = AssemblyInfo.cs
+    required: false
+    default: ""
+outputs:
+  version:
+    description: Version
+    value: ${{ steps.v.outputs.version }}
+  rcnum:
+    description: RC number (tags only)
+    value: ${{ steps.v.outputs.rcnum }}
+  release:
+    description: Release string
+    value: ${{ steps.v.outputs.release }}
+runs:
+  using: composite
+  steps:
+    - name: Get version
+      id: v
+      shell: bash
+      env:
+        VERSION_FILE: ${{ inputs.version-file }}
+      run: scripts/get_version.sh
