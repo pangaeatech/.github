@@ -1,6 +1,7 @@
-FROM dhi.io/python:3-alpine-sfw-dev
+FROM dhi.io/debian-base:trixie-debian13-dev
 
-RUN apk add -U bash jq curl pandoc zip unzip dotnet10-sdk doxygen nodejs npm
-RUN rm -Rf /var/cache/apk/*
+RUN apt-get update
+RUN apt-get install jq curl pandoc zip unzip dotnet10-sdk doxygen nodejs npm
+RUN rm -Rf /var/lib/apt/lists/*
 
 ENTRYPOINT ["/bin/bash"]
