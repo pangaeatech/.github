@@ -3,13 +3,18 @@ FROM dhi.io/debian-base:trixie-debian13-dev
 # renovate: datasource=github-tags depName=github/copilot.vim versioning=semver extractVersion=^v(?<version>.*)$
 ENV COPILOT_VIM_VERSION=1.59.0
 
+RUN apt-get update
+RUN apt-get install
+RUN apt-get install -y --no-install-recommends jq curl pandoc zip unzip doxygen nodejs npm git sed python3-pip python3-venv python3-dev build-essential pipx neovim wget
+
 RUN wget https://packages.microsoft.com/config/debian/13/packages-microsoft-prod.deb -O packages-microsoft-prod.deb && \
     sudo dpkg -i packages-microsoft-prod.deb && \
     rm packages-microsoft-prod.deb
-
 RUN apt-get update
-RUN apt-get install -y --no-install-recommends jq curl pandoc zip unzip doxygen nodejs npm git sed python3-pip python3-venv python3-dev build-essential dotnet-sdk-10.0 pipx neovim
+RUN apt-get install -y --no-install-recommends dotnet-sdk-10.0
+
 RUN rm -Rf /var/lib/apt/lists/*
+
 RUN pipx ensurepath
 RUN pipx install poetry
 
