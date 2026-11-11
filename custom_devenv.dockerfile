@@ -22,6 +22,7 @@ RUN pipx install poetry
 # Install copilot.vim plugin for neovim
 RUN curl -L -o /tmp/copilot.vim.tar.gz https://github.com/github/copilot.vim/archive/refs/tags/v${COPILOT_VIM_VERSION}.tar.gz && \
     tar -xzf /tmp/copilot.vim.tar.gz -C /tmp && \
+    mkdir -p /root/.config/nvim/pack/github/start && \
     mv /tmp/copilot.vim-${COPILOT_VIM_VERSION} /root/.config/nvim/pack/github/start/copilot.vim && \
     rm /tmp/copilot.vim.tar.gz
 
