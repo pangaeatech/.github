@@ -26,5 +26,4 @@ runs:
       env:
         RELEASE: ${{ inputs.release }}
         DOCKERFILE_EXT: ${{ inputs.dockerfile-ext }}
-      run: |
-        bash "${{ github.action_path }}/../../scripts/push_to_docker.sh"
+      run: scripts/push_to_docker.sh

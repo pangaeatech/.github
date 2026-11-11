@@ -1,8 +1,5 @@
 set -euo pipefail
-. "$(dirname "${BASH_SOURCE[0]}")/common.sh"
 
-# Builds and pushes every *.dockerfile in the repo root to ghcr.io (requires docker login to ghcr.io first).
-# Requires: RELEASE. Needs "packages: write".
 ext="${DOCKERFILE_EXT:-dockerfile}"
 registry="ghcr.io/${GITHUB_REPOSITORY,,}"
 
