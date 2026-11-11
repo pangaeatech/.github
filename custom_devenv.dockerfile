@@ -1,11 +1,10 @@
-FROM dhi.io/python:3
+FROM dhi.io/debian-base:trixie-debian13-dev
 
-ENV DOTNET_VERSION=10
 # renovate: datasource=github-tags depName=github/copilot.vim versioning=semver extractVersion=^v(?<version>.*)$
 ENV COPILOT_VIM_VERSION=1.59.0
 
 RUN apt-get update
-RUN apt-get install -y --no-install-recommends jq curl pandoc zip unzip dotnet${DOTNET_VERSION}-sdk doxygen nodejs npm poetry nvim git sed
+RUN apt-get install -y --no-install-recommends jq curl pandoc zip unzip dotnet10-sdk doxygen nodejs npm poetry nvim git sed python3-pip python3-venv python3-dev build-essential
 RUN rm -Rf /var/lib/apt/lists/*
 
 # Install opencode-desktop-linux-amd64.deb from latest release at https://github.com/anomalyco/opencode/releases
