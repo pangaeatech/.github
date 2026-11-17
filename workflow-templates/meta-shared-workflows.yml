@@ -1,0 +1,56 @@
+name: Shared Workflows Meta Template
+concurrency: auto-pr-${{ github.ref }}
+on:
+  push:
+    branches-ignore:
+      - $default-branch
+      - "dependabot/**"
+      - "renovate/**"
+      - "whitesource/**"
+  pull_request:
+    types: [opened, synchronize, reopened, closed, converted_to_draft, ready_for_review, review_requested, edited]
+  issue_comment:
+    types: [created]
+  pull_request_review_comment:
+    types: [created]
+  pull_request_review:
+    types: [submitted]
+
+permissions:
+  contents: write
+  pull-requests: write
+  repository-projects: read
+  actions: read
+  statuses: read
+  checks: read
+
+env:
+  DEFAULT_BRANCH: $default-branch
+  REDMINE_URL: "https://redmine.pangaeatech.com/" # Set to your URL
+  REDMINE_PROJECT_ID: "project-id" # Set to your project id
+  REDMINE_FIELD_ID: 11 # Set to your field id
+  REDMINE_TRACKER_ID: 29 # Set to your tracker id (optional)
+  REDMINE_VERSION_ID: 123 # Set to your version id (optional)
+  ENABLE_ANNOTATE_NPM_DEPENDENCIES: "true" # Set to "false" to disable
+  ENABLE_ADD_BOT_PRS_TO_REDMINE: "true" # Set to "false" to disable
+  ENABLE_UPDATE_REDMINE_ACTIVITY: "true" # Set to "false" to disable
+  ENABLE_AUTO_ADD_PR: "true" # Set to "false" to disable
+  ENABLE_LINK_OR_CREATE_REDMINE_FROM_BRANCH: "true" # Set to "false" to disable
+
+jobs:
+  shared-workflows-meta:
+    uses: pangaeatech/.github/.github/workflows/meta-shared-workflows.yml@main
+    with:
+      default_branch: ${{ env.DEFAULT_BRANCH }}
+      rm_url: ${{ env.REDMINE_URL }}
+      rm_project_id: ${{ env.REDMINE_PROJECT_ID }}
+      rm_field_id: ${{ env.REDMINE_FIELD_ID }}
+      rm_tracker_id: ${{ env.REDMINE_TRACKER_ID }}
+      rm_version_id: ${{ env.REDMINE_VERSION_ID }}
+      enable_annotate_npm_dependencies: ${{ env.ENABLE_ANNOTATE_NPM_DEPENDENCIES }}
+      enable_add_bot_prs_to_redmine: ${{ env.ENABLE_ADD_BOT_PRS_TO_REDMINE }}
+      enable_update_redmine_activity: ${{ env.ENABLE_UPDATE_REDMINE_ACTIVITY }}
+      enable_auto_add_pr: ${{ env.ENABLE_AUTO_ADD_PR }}
+      enable_link_or_create_redmine_from_branch: ${{ env.ENABLE_LINK_OR_CREATE_REDMINE_FROM_BRANCH }}
+    secrets:
+      rm_key: ${{ secrets.REDMINE_API_KEY }}

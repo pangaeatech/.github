@@ -33,19 +33,19 @@ on:
   workflow_call:
     inputs:
       pr_num:
-        # The Pull Request Number
-        required: true
+        # The Pull Request Number (optional - if not specified, will be taken from the event payload)
+        required: false
         type: string
       pr_url:
-        # The Pull Request URL
-        required: true
+        # The Pull Request URL (optional - if not specified, will be taken from the event payload)
+        required: false
         type: string
       pr_subject:
-        # The Pull Request Subject
-        required: true
+        # The Pull Request Subject (optional - if not specified, will be taken from the event payload)
+        required: false
         type: string
       pr_body:
-        # The Pull Request Description (optional)
+        # The Pull Request Description (optional - if not specified, will be taken from the event payload)
         required: false
         type: string
       rm_url:
@@ -85,7 +85,7 @@ jobs:
       - name: Add task to redmine
         run: |
           sudo apt-get install -y jq curl pandoc
-          SUBJ=$(echo "$PR_SUBJECT" | sed -e "s/^$PREFIX//i")
+          SUBJ="$(printf '%s' "$PR_SUBJECT" | perl -pe 's/^\\Q$ENV{PREFIX}\\E//i')"
           BODY=$(echo "Linked to [Pull Request $PR_NUM]($PR_URL)
 
              $PR_BODY" | pandoc -f gfm -t html | pandoc -f html -t textile | LC_ALL=UTF-8 sed -e 's/<tt>/<code>/g' -e 's/<\/tt>/<\/code>/g' -e 's/<hr *\/>/----/g' -e "s/[\xF0-\xF7].../�/g");
@@ -108,10 +108,10 @@ jobs:
           gh pr comment "$PR_URL" -b "Added as [Redmine Task $TaskId]($RM_URL/issues/$TaskId)";
           fi;
         env:
-          PR_URL: ${{ inputs.pr_url }}
-          PR_NUM: ${{ Inputs.pr_num }}
-          PR_SUBJECT: ${{ inputs.pr_subject }}
-          PR_BODY: ${{ inputs.pr_body }}
+          PR_URL: ${{ inputs.pr_url || github.event.pull_request.html_url }}
+          PR_NUM: ${{ inputs.pr_num || github.event.pull_request.number || github.event.issue.number }}
+          PR_SUBJECT: ${{ inputs.pr_subject || github.event.pull_request.title || 'Pull Request' }}
+          PR_BODY: ${{ inputs.pr_body || github.event.pull_request.body || '' }}
           RM_PROJECT_ID: ${{ inputs.rm_project_id }}
           RM_TRACKER_ID: ${{ inputs.rm_tracker_id }}
           RM_VERSION_ID: ${{ inputs.rm_version_id }}
@@ -122,13 +122,17 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set PR to draft and update subject
-        if: startsWith(inputs.pr_subject, inputs.draft_prefix || 'WIP ')
         run: |
+          if [[ "${SUBJECT_NORM}" != "${PREFIX_NORM}"* ]]; then
+            exit 0
+          fi
           gh pr ready "$PR_URL" --undo
-          SUBJ=$(echo "$SUBJECT" | sed -e "s/^$PREFIX//i")
+          SUBJ="$(printf '%s' "$SUBJECT" | perl -pe 's/^\\Q$ENV{PREFIX}\\E//i')"
           gh pr edit "$PR_URL" --title "$SUBJ"
         env:
-          PR_URL: ${{ inputs.pr_url }}
-          SUBJECT: "${{ inputs.pr_subject }}"
+          PR_URL: ${{ inputs.pr_url || github.event.pull_request.html_url }}
+          SUBJECT: "${{ inputs.pr_subject || github.event.pull_request.title || 'Pull Request' }}"
           PREFIX: "${{ inputs.draft_prefix || 'WIP ' }}"
+          SUBJECT_NORM: "${{ toLower(inputs.pr_subject || github.event.pull_request.title || 'Pull Request') }}"
+          PREFIX_NORM: "${{ toLower(inputs.draft_prefix || 'WIP ') }}"
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

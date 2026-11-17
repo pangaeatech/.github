@@ -17,25 +17,20 @@ permissions:
   statuses: read
   checks: read
 
+env:
+  DEFAULT_BRANCH: $default-branch
+  REDMINE_URL: "https://redmine.mycompany.com" # Set to your URL
+  REDMINE_PROJECT_ID: "projectid" # Set to your project id
+  REDMINE_FIELD_ID: 11 # Set to your field id
+  REDMINE_TRACKER_ID: 13 # Set to your tracker id (optional)
+  REDMINE_VERSION_ID: 10 # Set to your version id (optional)
+
 jobs:
   pull-request:
-    runs-on: ubuntu-latest
-    outputs:
-      pr_url: ${{ steps.open-pr.outputs.pr_url }}
-      pr_num: ${{ steps.open-pr.outputs.pr_number }}
-      pr_created: ${{ steps.open-pr.outputs.pr_created }}
-    steps:
-      - uses: actions/checkout@v4
-      - id: open-pr
-        run: |
-          gh pr view && echo "pr_created=false" >> $GITHUB_OUTPUT || {
-            gh pr create -d -B $default-branch -t "${{ github.ref_name }}" -b ""
-            echo "pr_number=$(gh pr view --json number -q .number || echo "")" >> $GITHUB_OUTPUT
-            echo "pr_url=$(gh pr view --json url -q .url || echo "")" >> $GITHUB_OUTPUT
-            echo "pr_created=true" >> $GITHUB_OUTPUT
-          }
-        env:
-          GH_TOKEN: ${{ github.token }}
+    uses: pangaeatech/.github/.github/workflows/auto-add-pr.yml@main
+    with:
+      base_branch: ${{ env.DEFAULT_BRANCH }}
+      pr_title: ${{ github.ref_name }}
 
   extractnum:
     needs: pull-request
@@ -60,8 +55,8 @@ jobs:
       pr_num: ${{ needs.pull-request.outputs.pr_num }}
       pr_url: ${{ needs.pull-request.outputs.pr_url }}
       rm_issue: ${{ needs.extractnum.outputs.issue }}
-      rm_url: "https://redmine.mycompany.com" # Set to your URL
-      rm_field_id: 11 # Set to your field id
+      rm_url: ${{ env.REDMINE_URL }}
+      rm_field_id: ${{ env.REDMINE_FIELD_ID }}
     secrets:
       rm_key: ${{ secrets.REDMINE_API_KEY }}
 
@@ -73,10 +68,10 @@ jobs:
       pr_num: ${{ needs.pull-request.outputs.pr_num }}
       pr_url: ${{ needs.pull-request.outputs.pr_url }}
       pr_subject: ${{ github.ref_name }}
-      rm_url: "https://redmine.mycompany.com" # Set to your URL
-      rm_project_id: "projectid" # Set to your project id
-      rm_field_id: 11 # Set to your field id
-      rm_tracker_id: 13 # Set to your tracker id (optional)
-      rm_version_id: 10 # Set to your version id (optional)
+      rm_url: ${{ env.REDMINE_URL }}
+      rm_project_id: ${{ env.REDMINE_PROJECT_ID }}
+      rm_field_id: ${{ env.REDMINE_FIELD_ID }}
+      rm_tracker_id: ${{ env.REDMINE_TRACKER_ID }}
+      rm_version_id: ${{ env.REDMINE_VERSION_ID }}
     secrets:
       rm_key: ${{ secrets.REDMINE_API_KEY }}
